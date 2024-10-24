@@ -1,5 +1,3 @@
-from entities.Character import Character
-
 class Enemy:
     def __init__(self, name, health, attack, defense, speed):
         self.name = name

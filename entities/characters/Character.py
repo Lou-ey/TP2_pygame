@@ -1,3 +1,5 @@
+import pygame
+
 class Character:
     def __init__(self, name, health, attack, defense, speed, x, y):
         self.name = name
@@ -9,5 +11,3 @@ class Character:
         self.y = y
         self.width = 50
         self.height = 50
-
-

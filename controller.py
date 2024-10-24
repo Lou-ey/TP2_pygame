@@ -4,10 +4,10 @@ from scenes.game_scene import GameScene
 pygame.init()
 
 def main():
-    game_scene = GameScene()
+    game_scene = GameScene() # Instancia a cena do jogo
     while True:
-        game_scene.run()
-        pygame.display.update()
+        game_scene.run() # Roda o jogo
+        pygame.display.update() # Atualiza a tela
 
 if __name__ == "__main__":
     main()

@@ -12,8 +12,9 @@ class GameScene:
         self.character = Character("Player", 100, 10, 5, 10, 50, 50)
         self.enemy = Enemy("Enemy", 100, 10, 5, 10)
 
-        self.background_color = (255, 255, 255)  # Branco
+        self.background_color = (255, 255, 255)
 
+    # Metodo para lidar com eventos
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -24,6 +25,7 @@ class GameScene:
                     pygame.quit()
                     quit()
 
+    # Metodo para atualizar o jogo
     def update(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -35,6 +37,7 @@ class GameScene:
         if keys[pygame.K_d]:
             self.character.x += self.character.speed
 
+        # Limita a movimentacao do personagem dentro da tela
         if self.character.x < 0:
             self.character.x = 0
         if self.character.x > self.SCREEN_WIDTH - self.character.width:
@@ -44,6 +47,7 @@ class GameScene:
         if self.character.y > self.SCREEN_HEIGHT - self.character.height:
             self.character.y = self.SCREEN_HEIGHT - self.character.height
 
+    # Metodo para renderizar o jogo
     def render(self):
         self.SCREEN.fill(self.background_color)
 
@@ -51,6 +55,7 @@ class GameScene:
 
         pygame.display.update()
 
+    # Metodo para rodar o jogo
     def run(self):
         self.handle_events()
         self.update()

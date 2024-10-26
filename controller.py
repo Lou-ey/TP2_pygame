@@ -5,7 +5,8 @@ pygame.init()
 
 def main():
     game_scene = GameScene() # Instancia a cena do jogo
-    while True:
+    run = True
+    while run:
         game_scene.run() # Roda o jogo
         pygame.display.update() # Atualiza a tela
 

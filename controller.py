@@ -1,4 +1,6 @@
 import pygame
+from pygame.time import Clock
+
 from scenes.game_scene import GameScene
 
 pygame.init()
@@ -9,6 +11,7 @@ def main():
     while run:
         game_scene.run() # Roda o jogo
         pygame.display.update() # Atualiza a tela
+        Clock().tick(60)
 
 if __name__ == "__main__":
     main()

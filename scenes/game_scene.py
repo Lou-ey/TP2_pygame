@@ -4,15 +4,32 @@ from entities.enemies.Enemy import Enemy
 
 class GameScene:
     def __init__(self):
-        self.SCREEN_WIDTH = 800
-        self.SCREEN_HEIGHT = 600
+        self.SCREEN_WIDTH = 1000
+        self.SCREEN_HEIGHT = 800
         self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Game Scene")
 
-        self.character = Character("Player", 100, 10, 5, 10, 50, 50)
+        self.TILE_SIZE = 60
+        self.MAP_WIDTH = 50
+        self.MAP_HEIGHT = 50
+
+        self.map_layout = self.generate_map()
+        self.tile_assets = self.load_assets()
+
+        self.character = Character("Player", 100, 10, 5, 3, self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2)
         self.enemy = Enemy("Enemy", 100, 10, 5, 10)
 
-        self.background_color = (255, 255, 255)
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.character)
+
+        self.background_color = (39, 110, 58)
+
+    def generate_map(self):
+        return [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
+
+    def load_assets(self):
+        grass_tile = pygame.image.load("assets/images/map/grass_tile.png")
+        return {0: grass_tile}
 
     # Metodo para lidar com eventos
     def handle_events(self):
@@ -28,30 +45,21 @@ class GameScene:
     # Metodo para atualizar o jogo
     def update(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            self.character.y -= self.character.speed
-        if keys[pygame.K_a]:
-            self.character.x -= self.character.speed
-        if keys[pygame.K_s]:
-            self.character.y += self.character.speed
-        if keys[pygame.K_d]:
-            self.character.x += self.character.speed
-
-        # Limita a movimentacao do personagem dentro da tela
-        if self.character.x < 0:
-            self.character.x = 0
-        if self.character.x > self.SCREEN_WIDTH - self.character.width:
-            self.character.x = self.SCREEN_WIDTH - self.character.width
-        if self.character.y < 0:
-            self.character.y = 0
-        if self.character.y > self.SCREEN_HEIGHT - self.character.height:
-            self.character.y = self.SCREEN_HEIGHT - self.character.height
+        self.character.update(keys)
+        self.all_sprites.update(keys)
 
     # Metodo para renderizar o jogo
     def render(self):
-        self.SCREEN.fill(self.background_color)
+        self.SCREEN.fill((0, 0, 0))
 
-        pygame.draw.rect(self.SCREEN, (0, 0, 255), (self.character.x, self.character.y, self.character.width, self.character.height))
+        # Desenha o mapa
+        for row in range(self.MAP_HEIGHT):
+            for col in range(self.MAP_WIDTH):
+                tile = self.map_layout[row][col]
+                tile_asset = self.tile_assets[tile]
+                self.SCREEN.blit(tile_asset, (col * self.TILE_SIZE, row * self.TILE_SIZE))
+
+        self.all_sprites.draw(self.SCREEN)
 
         pygame.display.update()
 

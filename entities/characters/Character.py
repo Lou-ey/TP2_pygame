@@ -1,7 +1,7 @@
 import pygame
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, health, attack, defense, speed, x, y):
+    def __init__(self, name, health, attack, defense, speed, x, y, width, height):
         super().__init__()
         self.name = name
         self.health = health
@@ -10,8 +10,9 @@ class Character(pygame.sprite.Sprite):
         self.speed = speed
         #self.x = x
         #self.y = y
-        #self.width = 25
-        #self.height = 25
+        self.width = width
+        self.height = height
+        self.displacement = 0
 
         self.idle_animation = [pygame.image.load("assets/images/player/player_idle/00.png"),
                                pygame.image.load("assets/images/player/player_idle/01.png"),
@@ -30,12 +31,20 @@ class Character(pygame.sprite.Sprite):
         self.image = self.idle_animation[0]
         self.rect = self.image.get_rect(center=(x, y))
 
+        for i in range(len(self.idle_animation)):
+            self.idle_animation[i] = pygame.transform.scale(self.idle_animation[i], (self.width, self.height))
+            self.rect = self.idle_animation[i].get_rect(center=(x, y))
+        for i in range(len(self.walk_animation)):
+            self.walk_animation[i] = pygame.transform.scale(self.walk_animation[i], (self.width, self.height))
+            self.rect = self.walk_animation[i].get_rect(center=(x, y))
+
         self.current_frame = 0
         self.idle_animation_speed = 0.1
         self.walk_animation_speed = 0.2
         self.frame_counter = 0
         self.is_moving = False
         self.facing_left = False
+        self.facing_right = True
 
     def update(self, keys):
         self.is_moving = False
@@ -52,12 +61,14 @@ class Character(pygame.sprite.Sprite):
             self.is_moving = True
             if not self.facing_left:
                 self.facing_left = True
+                self.facing_right = False
                 self.flip_animation()
         if keys[pygame.K_d]:
             self.rect.x += self.speed
             self.is_moving = True
             if self.facing_left:
                 self.facing_left = False
+                self.facing_right = True
                 self.flip_animation()
 
         if self.is_moving:

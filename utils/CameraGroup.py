@@ -19,6 +19,10 @@ class CameraGroup(pygame.sprite.Group):
         self.offset.x = max(0, min(self.offset.x, self.map_width - self.screen_width))
         self.offset.y = max(0, min(self.offset.y, self.map_height - self.screen_height))
 
+        # Limita o character para os limites da camera
+        target.rect.x = max(0, min(target.rect.x, self.map_width - target.rect.width + 20))
+        target.rect.y = max(0, min(target.rect.y, self.map_height - target.rect.height + 20))
+
     def draw(self):
         # Desenha todos os sprites com o deslocamento da camera
         for sprite in sorted(self.sprites(), key=lambda x: x.rect.bottom):

@@ -1,29 +1,72 @@
-Organização do código:
+# Projeto: Jogo em Pygame
 
-controller.py:
+Este é um jogo desenvolvido em Python utilizando a biblioteca Pygame. O jogo apresenta um personagem que pode se mover em um ambiente de mapa 2D. O objetivo deste projeto é proporcionar uma experiência interativa e divertida com elementos de RPG e Sobrevivência.
 
-- Ponto de entrada do jogo.
-- Instancia a cena do jogo (GameScene) e roda o loop principal.
+## Índice
 
-game_scene.py:
+- [Recursos](#recursos)
+- [Instalação](#instalação)
+- [Como Jogar](#como-jogar)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Contribuições](#contribuições)
+- [Licença](#licença)
 
-Gere a lógica principal da cena (a movimentação, renderização e controle dos eventos).
-Manipula a interação do jogador com o personagem e atualiza o estado da scene.
+## Recursos
 
-Character.py:
+- **Movimentação do Personagem:** O personagem pode se mover em quatro direções.
+- **Interação com o Ambiente:** Árvores que podem ser desenhadas no mapa, e o personagem pode passar atrás delas.
+- **Animações:** O personagem e as árvores possuem animações para tornar a experiência mais envolvente.
 
-Define a classe Character.
-A classe armazena as propriedades e o comportamento do personagem.
+## Instalação
 
+Para executar o jogo, você precisará ter Python e Pygame instalados em seu sistema. Siga os passos abaixo:
 
-Fluxo do jogo:
+1. Clone este repositório:
+   ```bash
+   git clone <URL_DO_REPOSITÓRIO>
+   cd <NOME_DA_PASTA>
 
-O controller.py inicia o Pygame, configura a janela e chama o método run() da class GameScene().
+2. Instale o Pygame:
+   ```bash
+    pip install pygame
+   
+3. Execute o jogo:
 
-A GameScene contém os métodos para:
+    ```bash
+    python controller.py
+   
+## Estrutura do Projeto
 
-- Eventos: Processa eventos do teclado e de saída.
-- Atualização: Atualiza a posição do personagem com base nos inputs.
-- Renderização: Desenha o personagem na scene e atualiza o display.
+``` bash
+project_directory/
+│
+├── controller.py               # Ficheiro principal para iniciar o jogo
+├── scenes/                      # Contém as diferentes cenas do jogo
+│   ├── game_scene.py            # Lógica da cena do jogo
+│
+├── entities/                    # Contém os diferentes sprites do jogo
+│   ├── characters/              # Contém a classe do personagem
+│   │   └── Character.py
+│   ├── objects/                 # Contém objetos interativos como árvores
+│   │   └── Tree.py
+│   ├── enemies/                 # Contém inimigos do jogo
+│   │   └── Enemy.py
+│
+├── utils/                       # Funções utilitárias
+│   └── CameraGroup.py           # Classe para gerenciar a câmera do jogo
+│
+├── assets/                      # Imagens e sons do jogo
+│   ├── images/
+│   │   ├── map/
+│   │   │   ├── grass_tile.png
+│   │   │   ├── tree/
+│   │   │   │   ├── 00.png
+│   │   │   │   ├── 01.png
+│   │   │   │   ├── 02.png
+│   │   │   │   └── 03.png
+│   │   └── ...
+│   └── sound/
+│
+└── README.md                   # Este ficheiro
+```
 
-O Character.py fornece a classe do personagem com atributos vida, ataque, defesa, velocidade e posição inicial e tamanho(width/height).

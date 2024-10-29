@@ -33,7 +33,7 @@ class Character(pygame.sprite.Sprite):
         self.current_frame = 0
         self.idle_animation_speed = 0.1
         self.walk_animation_speed = 0.2
-        self.animation_counter = 0
+        self.frame_counter = 0
         self.is_moving = False
         self.facing_left = False
 
@@ -72,14 +72,14 @@ class Character(pygame.sprite.Sprite):
 
     # Animação de idle
     def animate_idle(self):
-        self.animation_counter += self.idle_animation_speed
-        if self.animation_counter >= len(self.idle_animation):
-            self.animation_counter = 0
-        self.image = self.idle_animation[int(self.animation_counter)]
+        self.frame_counter += self.idle_animation_speed
+        if self.frame_counter >= len(self.idle_animation):
+            self.frame_counter = 0
+        self.image = self.idle_animation[int(self.frame_counter)]
 
     # Animação de andar
     def animate_walk(self):
-        self.animation_counter += self.walk_animation_speed
-        if self.animation_counter >= len(self.walk_animation):
-            self.animation_counter = 0
-        self.image = self.walk_animation[int(self.animation_counter)]
+        self.frame_counter += self.walk_animation_speed
+        if self.frame_counter >= len(self.walk_animation):
+            self.frame_counter = 0
+        self.image = self.walk_animation[int(self.frame_counter)]

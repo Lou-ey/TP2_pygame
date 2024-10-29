@@ -1,6 +1,7 @@
 import pygame
 import os
 
+
 class MainMenu:
     def __init__(self):
         pygame.init()
@@ -12,14 +13,19 @@ class MainMenu:
         self.selected_option = 0
         self.running = True
 
-        self.background_image = pygame.image.load(os.path.join('assets/images/menu/Banner_Vertical.png'))
-        self.button_image = pygame.image.load(os.path.join('assets/images/menu/Button_Red_3Slides.png'))
-        self.font = pygame.font.Font(pygame.font.get_default_font(), 36)
+        self.background_image = self.load_and_scale_image('../assets/images/menu/Banner_Vertical.png', (350, 450))
+        self.banner_image = self.load_and_scale_image('../assets/images/menu/Ribbon_Red_3Slides.png', (250, 80))
+        self.button_image = self.load_and_scale_image('../assets/images/menu/Button_Red_3Slides.png', (150, 50))
+
+        self.font = pygame.font.Font(os.path.join('../assets/fonts/DungeonFont.ttf'), 25)
+
+    def load_and_scale_image(self, path, size):
+        image = pygame.image.load(path)
+        return pygame.transform.scale(image, size)
 
     def draw_text(self, text, color, x, y):
         text_surface = self.font.render(text, True, color)
-        text_rect = text_surface.get_rect()
-        text_rect.center = (x, y)
+        text_rect = text_surface.get_rect(center=(x, y))
         self.screen.blit(text_surface, text_rect)
 
     def handle_events(self):
@@ -34,27 +40,45 @@ class MainMenu:
                 elif event.key == pygame.K_RETURN:
                     return self.options[self.selected_option]
 
+    def draw_menu(self):
+        button_width, button_height = self.button_image.get_size()
+        start_y = (self.height - (len(self.options) * button_height)) // 2
+
+
+        for i, option in enumerate(self.options):
+            button_x = (self.width - button_width) // 2
+            button_y = start_y + i * button_height
+
+            self.screen.blit(self.button_image, (button_x, button_y))
+            text_x = button_x + button_width // 2
+            text_y = button_y + button_height - 60 // 2
+            color = (255, 255, 255) if i == self.selected_option else (0, 0, 0)
+
+            self.draw_text(option, color, text_x, text_y)
+
     def run(self):
         while self.running:
-            self.screen.blit(self.background_image, (0, 0))
+            self.screen.fill((71, 171, 169))
 
-            # Desenhar opções de menu
-            for i, option in enumerate(self.options):
-                color = (255, 0, 0) if i == self.selected_option else (255, 255, 255)
-                self.draw_text(option, color, self.width / 2, self.height / 2 + i * 50)
+            banner_width, banner_height = self.background_image.get_size()
+            banner_x = (self.width - banner_width) // 2
+            banner_y = (self.height - banner_height) // 2
+
+            self.screen.blit(self.background_image, (banner_x, banner_y))
+            self.screen.blit(self.banner_image, (375, 240))
+            self.draw_menu()
 
             pygame.display.flip()
             selected_action = self.handle_events()
             if selected_action:
-                print(f"Selected Option: {selected_action}")
-                return selected_action
+                if selected_action == "Quit":
+                    self.running = False  # Encerra o jogo
 
-            self.clock.tick(60)
+        pygame.quit()
 
 
 menu = MainMenu()
 choice = menu.run()
-print(f"User chose: {choice}")
-pygame.quit()
+print(f"Usuário escolheu: {choice}")
 
 

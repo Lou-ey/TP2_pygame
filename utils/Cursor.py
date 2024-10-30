@@ -6,7 +6,7 @@ class Cursor(pygame.sprite.Sprite):
         self.image_path = image_path
         self.size = size
         if image_path:
-            self.image = pygame.image.load(image_path)
+            self.image = pygame.image.load(image_path).convert_alpha()
 
         self.rect = self.image.get_rect()
 

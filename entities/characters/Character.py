@@ -14,19 +14,19 @@ class Character(pygame.sprite.Sprite):
         self.height = height
         self.displacement = 0
 
-        self.idle_animation = [pygame.image.load("assets/images/player/player_idle/00.png"),
-                               pygame.image.load("assets/images/player/player_idle/01.png"),
-                               pygame.image.load("assets/images/player/player_idle/02.png"),
-                               pygame.image.load("assets/images/player/player_idle/03.png"),
-                               pygame.image.load("assets/images/player/player_idle/04.png"),
-                               pygame.image.load("assets/images/player/player_idle/05.png")]
+        self.idle_animation = [pygame.image.load("assets/images/player/player_idle/00.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_idle/01.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_idle/02.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_idle/03.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_idle/04.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_idle/05.png").convert_alpha()]
 
-        self.walk_animation = [pygame.image.load("assets/images/player/player_walk/00.png"),
-                               pygame.image.load("assets/images/player/player_walk/01.png"),
-                               pygame.image.load("assets/images/player/player_walk/02.png"),
-                               pygame.image.load("assets/images/player/player_walk/03.png"),
-                               pygame.image.load("assets/images/player/player_walk/04.png"),
-                               pygame.image.load("assets/images/player/player_walk/05.png")]
+        self.walk_animation = [pygame.image.load("assets/images/player/player_walk/00.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_walk/01.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_walk/02.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_walk/03.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_walk/04.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/player_walk/05.png").convert_alpha()]
 
         self.image = self.idle_animation[0]
         self.rect = self.image.get_rect(center=(x, y))

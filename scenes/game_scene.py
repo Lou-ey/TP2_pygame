@@ -7,14 +7,14 @@ import random
 
 class GameScene:
     def __init__(self):
-        self.SCREEN_WIDTH = 800
-        self.SCREEN_HEIGHT = 600
-        self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        self.SCREEN_WIDTH = pygame.display.Info().current_w
+        self.SCREEN_HEIGHT = pygame.display.Info().current_h
+        self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.FULLSCREEN)
         pygame.display.set_caption("Game Scene")
 
         self.TILE_SIZE = 60
-        self.MAP_WIDTH = 50
-        self.MAP_HEIGHT = 50
+        self.MAP_WIDTH = 500
+        self.MAP_HEIGHT = 500
         self.CURSOR_SIZE = (15, 23)
         self.CHARACTER_SIZE = (170, 170)
         self.map_layout = self.generate_map()
@@ -30,7 +30,7 @@ class GameScene:
         self.character = Character("Player", 100, 10, 5, 3, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
         self.camera.add(self.character) # Adiciona o personagem à camera
 
-        self.num_trees = 20
+        self.num_trees = 2000
 
         self.generate_trees(self.num_trees)
         self.background_color = (39, 110, 58)
@@ -47,7 +47,7 @@ class GameScene:
             self.camera.add(tree)  # Adiciona as árvores à câmera
 
     def load_grass_assets(self):
-        grass_tile = pygame.image.load("assets/images/map/ground/grass_tile.png")
+        grass_tile = pygame.image.load("assets/images/map/ground/grass_tile.png").convert_alpha()
         return {0: grass_tile}
 
     def handle_events(self):
@@ -70,9 +70,14 @@ class GameScene:
     def render(self):
         self.SCREEN.fill(self.background_color)
 
+        character_x, character_y = self.character.rect.center
+
+        visible_tiles_x = range(character_x // self.TILE_SIZE - 20, character_x // self.TILE_SIZE + 20)
+        visible_tiles_y = range(character_y // self.TILE_SIZE - 10, character_y // self.TILE_SIZE + 10)
+
         # Desenha o mapa usando a câmera
-        for row in range(self.MAP_HEIGHT):
-            for col in range(self.MAP_WIDTH):
+        for row in visible_tiles_y:
+            for col in visible_tiles_x:
                 tile = self.map_layout[row][col]
                 tile_asset = self.tile_assets[tile]
                 pos_x = col * self.TILE_SIZE - self.camera.offset.x

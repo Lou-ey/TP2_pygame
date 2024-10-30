@@ -12,10 +12,10 @@ class Tree(pygame.sprite.Sprite):
         self.current_frame = 0
 
 
-        self.idle_animation = [pygame.image.load("assets/images/map/tree/00.png"),
-                               pygame.image.load("assets/images/map/tree/01.png"),
-                               pygame.image.load("assets/images/map/tree/02.png"),
-                               pygame.image.load("assets/images/map/tree/03.png"),]
+        self.idle_animation = [pygame.image.load("assets/images/map/tree/00.png").convert_alpha(),
+                               pygame.image.load("assets/images/map/tree/01.png").convert_alpha(),
+                               pygame.image.load("assets/images/map/tree/02.png").convert_alpha(),
+                               pygame.image.load("assets/images/map/tree/03.png").convert_alpha()]
 
         self.image = self.idle_animation[self.current_frame]
         self.rect = self.image.get_rect(midbottom=(x, y))

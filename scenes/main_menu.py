@@ -16,9 +16,6 @@ class MainMenu:
         self.running = True
         self.CURSOR_SIZE = (15, 23)
 
-        # self.map_layout = self.generate_map()
-        # self.sand_assets = self.load_sand_tiles()
-
         self.TILE_SIZE = 60
         self.MAP_WIDTH = 2
         self.MAP_HEIGHT = 2
@@ -45,17 +42,12 @@ class MainMenu:
 
         # Custom cursor instance
         self.cursor = Cursor('../assets/images/UI/pointer/01.png', self.CURSOR_SIZE)
-
         # Track mouse position dynamically
         self.mouse_position = (0, 0)  # Initial position
 
     def load_and_scale_image(self, path, size):
-        try:
             image = pygame.image.load(path)
             return pygame.transform.scale(image, size)
-        except FileNotFoundError:
-            print(f"Error: File {path} not found.")
-            return pygame.Surface(size)
 
     def animate_foam(self):
         self.frame_counter += self.animation_speed
@@ -63,14 +55,6 @@ class MainMenu:
             self.frame_counter = 0
         self.image = self.foam_animation[int(self.frame_counter)]
 
-
-    '''def generate_map(self):
-        empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
-        return empty_map
-
-    def load_sand_tiles(self):
-        sand_tile = pygame.image.load("assets/images/map/ground/sand_tile.png")
-        return {0: sand_tile}'''
 
     def draw_text(self, text, color, x, y):
         text_surface = self.font.render(text, True, color)
@@ -97,28 +81,20 @@ class MainMenu:
     def render(self):
         self.screen.blit(self.background_image, (0, 0))
 
-        '''for row in range(self.MAP_HEIGHT):
-            for col in range(self.MAP_WIDTH):
-                tile = self.map_layout[row][col]
-                tile_asset = self.sand_assets[tile]
-                self.screen.blit(tile_asset, (100, 200))'''
-
         # Draw background and banner
         banner_x = (self.width - self.banner_menu.get_width()) // 2
         banner_y = (self.height - self.banner_menu.get_height()) // 2
         self.screen.blit(self.banner_menu, (banner_x, banner_y))
-        self.screen.blit(self.banner_image, (590, 275))
+        self.screen.blit(self.banner_image, (banner_x, banner_y + 70))
 
-        # Button rendering
         button_width, button_height = self.button_image.get_size()
         start_y = (self.height - (len(self.options) * button_height)) // 2
+
         self.button_rects = []
 
         for i, option in enumerate(self.options):
-            if pygame.Rect((self.width - button_width) // 2, start_y + i * button_height, button_width,
-                           button_height).collidepoint(self.mouse_position):
-                button_img = pygame.transform.scale(self.button_image,
-                                                    (int(button_width * 1.05), int(button_height * 1.05)))
+            if pygame.Rect((self.width - button_width) // 2, start_y + i * button_height, button_width,button_height).collidepoint(self.mouse_position):
+                button_img = pygame.transform.scale(self.button_image, (int(button_width * 1.05), int(button_height * 1.05)))
                 text_y = start_y + i * button_height + button_height - 60 // 2
                 self.draw_text(option, (255, 255, 255), self.width // 2, text_y)
                 color = (255, 255, 255)

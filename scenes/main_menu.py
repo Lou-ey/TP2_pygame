@@ -1,5 +1,8 @@
 import pygame
 import os
+
+from skimage.transform import rescale
+
 from utils.Cursor import Cursor
 
 
@@ -20,6 +23,8 @@ class MainMenu:
         self.MAP_WIDTH = 2
         self.MAP_HEIGHT = 2
 
+        #self.boneco1 = pygame.image.load("../assets/images/player/player_idle/00.png").convert_alpha()
+
         self.foam_animation = [pygame.image.load("../assets/images/map/water/00.png").convert_alpha(),
                                pygame.image.load("../assets/images/map/water/01.png").convert_alpha(),
                                pygame.image.load("../assets/images/map/water/01.png").convert_alpha(),
@@ -29,9 +34,13 @@ class MainMenu:
                                pygame.image.load("../assets/images/map/water/06.png").convert_alpha(),
                                pygame.image.load("../assets/images/map/water/07.png").convert_alpha()]
 
+
         self.animation_speed = 0.2
         self.frame_counter = 0
         self.current_frame = 0
+
+        self.foam_image = self.foam_animation[0]
+        self.sand_image = pygame.image.load("../assets/images/map/ground/sand_tile.png").convert_alpha()
 
         self.background_image = self.load_and_scale_image('../assets/images/menu/Background.png',
                                                           (self.width, self.height))
@@ -50,11 +59,13 @@ class MainMenu:
             return pygame.transform.scale(image, size)
 
     def animate_foam(self):
+        foam_rescaled = []
+        for i in self.foam_animation:
+            foam_rescaled.append(pygame.transform.scale(i, (int(i.get_width() * 0.89), int(i.get_height() * 0.89))).convert_alpha())
         self.frame_counter += self.animation_speed
-        if self.frame_counter >= len(self.foam_animation):
+        if self.frame_counter >= len(foam_rescaled):
             self.frame_counter = 0
-        self.image = self.foam_animation[int(self.frame_counter)]
-
+        self.foam_image = foam_rescaled[int(self.frame_counter)]
 
     def draw_text(self, text, color, x, y):
         text_surface = self.font.render(text, True, color)
@@ -114,8 +125,28 @@ class MainMenu:
             text_y = button_y + button_img.get_height() - 60 // 2
             self.draw_text(option, color, text_x, text_y)
 
-        self.cursor.draw(self.screen)
+        self.animate_foam()
+
+        foam_x = (self.width - self.foam_image.get_width()) // 2 - int(self.width * 0.1)
+        foam_y = (self.height - self.foam_image.get_height()) // 2 - int(self.height * 0.4)
+        self.screen.blit(self.foam_image, (foam_x, foam_y))
+
+        sand_x = (self.width - self.sand_image.get_width()) // 2 - int(self.width * 0.1)
+        sand_y = (self.height - self.sand_image.get_height()) // 2 - int(self.height * 0.4)
+        self.screen.blit(self.sand_image, (sand_x, sand_y))
+        '''boneco_x = (self.width - self.boneco1.get_width()) // 2 - int(self.width * 0.1)
+        boneco_y = (self.height - self.boneco1.get_height()) // 2 - int(self.height * 0.4)
+        self.screen.blit(self.boneco1, (boneco_x, boneco_y))'''
+
+        foam_x = (self.width - self.foam_image.get_width()) // 2 + int(self.width * 0.1)
+        foam_y = (self.height - self.foam_image.get_height()) // 2 + int(self.height * 0.4)
+        self.screen.blit(self.foam_image, (foam_x, foam_y))
+
+        sand_x = (self.width - self.sand_image.get_width()) // 2 + int(self.width * 0.1)
+        sand_y = (self.height - self.sand_image.get_height()) // 2 + int(self.height * 0.4)
+        self.screen.blit(self.sand_image, (sand_x, sand_y))
         pygame.display.flip()
+
 
     def update(self):
         # Update mouse position
@@ -130,7 +161,6 @@ class MainMenu:
             self.update()
             self.render()
             self.clock.tick(60)
-
 
 menu = MainMenu()
 menu.run()

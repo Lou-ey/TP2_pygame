@@ -1,5 +1,6 @@
 import pygame
 from entities.characters.Character import Character
+from entities.enemies.types.TorchGoblin import TorchGoblin
 from entities.objects.Tree import Tree
 from utils.CameraGroup import CameraGroup
 from utils.Cursor import Cursor
@@ -33,6 +34,8 @@ class GameScene:
         self.num_trees = 2000
 
         self.generate_trees(self.num_trees)
+        self.generate_enemies(10, [TorchGoblin])
+
         self.background_color = (39, 110, 58)
 
     def generate_map(self):
@@ -45,6 +48,25 @@ class GameScene:
             tree_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             tree = Tree(tree_x, tree_y, self.TILE_SIZE)
             self.camera.add(tree)  # Adiciona as árvores à câmera
+
+    def generate_enemies(self, num_enemies, enemy_types):
+        """
+        Gera inimigos no mapa.
+        - `num_enemies`: número total de inimigos a gerar.
+        - `enemy_types`: lista de classes de inimigos diferentes para gerar aleatoriamente.
+        """
+        for _ in range(num_enemies):
+            # Define a posição aleatória do inimigo
+            enemy_x = self.MAP_WIDTH * self.TILE_SIZE // 2
+            enemy_y = self.MAP_HEIGHT * self.TILE_SIZE // 2
+
+            # Seleciona aleatoriamente o tipo de inimigo
+            enemy_class = random.choice(enemy_types)
+            new_enemy = enemy_class(enemy_x, enemy_y)  # Instancia um novo inimigo do tipo escolhido
+
+            # Adiciona o novo inimigo à câmera e à lista de sprites
+            self.camera.add(new_enemy)
+
 
     def load_grass_assets(self):
         grass_tile = pygame.image.load("assets/images/map/ground/grass_tile.png").convert_alpha()
@@ -67,13 +89,36 @@ class GameScene:
         self.camera.update(keys)
         self.cursor.update()
 
-    def render(self):
-        self.SCREEN.fill(self.background_color)
+    def culling(self, character_x, character_y):
+        # Define as coordenadas do personagem em tiles
+        character_tile_x = character_x // self.TILE_SIZE
+        character_tile_y = character_y // self.TILE_SIZE
 
-        character_x, character_y = self.character.rect.center
+        # Quantidade de tiles visíveis ao redor do personagem
+        visible_range_x = 20
+        visible_range_y = 10
 
-        visible_tiles_x = range(character_x // self.TILE_SIZE - 10, character_x // self.TILE_SIZE + 10)
-        visible_tiles_y = range(character_y // self.TILE_SIZE - 5, character_y // self.TILE_SIZE + 5)
+        # Ajusta a área visível em X, considerando as bordas do mapa
+        if character_tile_x < visible_range_x:
+            # Quando o personagem está perto do lado esquerdo do mapa
+            visible_tiles_x = range(0, visible_range_x * 2)
+        elif character_tile_x > self.MAP_WIDTH - visible_range_x:
+            # Quando o personagem está perto do lado direito do mapa
+            visible_tiles_x = range(self.MAP_WIDTH - visible_range_x * 2, self.MAP_WIDTH)
+        else:
+            # Centro da área visível no personagem
+            visible_tiles_x = range(character_tile_x - visible_range_x, character_tile_x + visible_range_x)
+
+        # Ajusta a área visível em Y, considerando as bordas do mapa
+        if character_tile_y < visible_range_y:
+            # Quando o personagem está perto do topo do mapa
+            visible_tiles_y = range(0, visible_range_y * 2)
+        elif character_tile_y > self.MAP_HEIGHT - visible_range_y:
+            # Quando o personagem está perto da parte inferior do mapa
+            visible_tiles_y = range(self.MAP_HEIGHT - visible_range_y * 2, self.MAP_HEIGHT)
+        else:
+            # Centro da área visível no personagem
+            visible_tiles_y = range(character_tile_y - visible_range_y, character_tile_y + visible_range_y)
 
         # Desenha o mapa usando a câmera
         for row in visible_tiles_y:
@@ -83,6 +128,13 @@ class GameScene:
                 pos_x = col * self.TILE_SIZE - self.camera.offset.x
                 pos_y = row * self.TILE_SIZE - self.camera.offset.y
                 self.SCREEN.blit(tile_asset, (pos_x, pos_y))
+
+    def render(self):
+        self.SCREEN.fill(self.background_color)
+
+        character_x, character_y = self.character.rect.center
+
+        self.culling(character_x, character_y)
 
         # Desenha todos os sprites controlados pela câmera
         self.camera.draw()

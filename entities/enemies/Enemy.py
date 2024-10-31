@@ -1,3 +1,5 @@
+import pygame
+
 class Enemy:
     def __init__(self, name, health, attack, defense, speed):
         self.name = name
@@ -7,5 +9,10 @@ class Enemy:
         self.speed = speed
 
     def attack(self, target):
-        target.health -= self.attack - target.defense
-        print(f"{self.name} attacked {target.name} for {self.attack - target.defense} damage!")
+        # Calcula o dano considerando a defesa do alvo
+        damage = max(0, self.attack - target.defense)
+        target.health -= damage
+        print(f"{self.name} atacou {target.name} e causou {damage} de dano!")
+
+    def update(self):
+        pass

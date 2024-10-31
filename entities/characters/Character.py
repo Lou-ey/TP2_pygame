@@ -1,5 +1,6 @@
 import pygame
 
+
 class Character(pygame.sprite.Sprite):
     def __init__(self, name, health, attack, defense, speed, x, y, width, height):
         super().__init__()
@@ -14,40 +15,55 @@ class Character(pygame.sprite.Sprite):
         self.height = height
         self.displacement = 0
 
-        self.idle_animation = [pygame.image.load("assets/images/player/player_idle/00.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_idle/01.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_idle/02.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_idle/03.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_idle/04.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_idle/05.png").convert_alpha()]
+        self.idle_animation = [pygame.image.load("assets/images/player/idle/00.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/idle/01.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/idle/02.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/idle/03.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/idle/04.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/idle/05.png").convert_alpha()]
 
-        self.walk_animation = [pygame.image.load("assets/images/player/player_walk/00.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_walk/01.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_walk/02.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_walk/03.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_walk/04.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/player_walk/05.png").convert_alpha()]
+        self.walk_animation = [pygame.image.load("assets/images/player/walk/00.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/walk/01.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/walk/02.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/walk/03.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/walk/04.png").convert_alpha(),
+                               pygame.image.load("assets/images/player/walk/05.png").convert_alpha()]
+
+        self.attack_animation = [pygame.image.load(f"assets/images/player/attack_1/0{i}.png").convert_alpha() for i in range(1, 6)]
 
         self.image = self.idle_animation[0]
-        self.rect = self.image.get_rect(center=(x, y))
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.image = self.walk_animation[0]
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.image = self.attack_animation[0]  # Use o primeiro quadro do ataque para começar
+        self.rect = self.image.get_rect(topleft=(x, y))
 
         for i in range(len(self.idle_animation)):
             self.idle_animation[i] = pygame.transform.scale(self.idle_animation[i], (self.width, self.height))
-            self.rect = self.idle_animation[i].get_rect(center=(x, y))
+            self.rect = self.idle_animation[i].get_rect(topleft=(x, y))
         for i in range(len(self.walk_animation)):
             self.walk_animation[i] = pygame.transform.scale(self.walk_animation[i], (self.width, self.height))
-            self.rect = self.walk_animation[i].get_rect(center=(x, y))
+            self.rect = self.walk_animation[i].get_rect(topleft=(x, y))
+        for i in range(len(self.attack_animation)):
+            self.attack_animation[i] = pygame.transform.scale(self.attack_animation[i], (self.width, self.height))
+            self.rect = self.attack_animation[i].get_rect(topleft=(x, y))
 
         self.current_frame = 0
+        self.frame_counter = 0
         self.idle_animation_speed = 0.1
         self.walk_animation_speed = 0.2
-        self.frame_counter = 0
+        self.attack_animation_speed = 0.2
         self.is_moving = False
+        self.is_attacking = False
+        self.attack_duration = 15
+        self.attack_timer = 0
         self.facing_left = False
         self.facing_right = True
 
     def update(self, keys):
         self.is_moving = False
+
+        self.is_attacking = False
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -70,8 +86,14 @@ class Character(pygame.sprite.Sprite):
                 self.facing_left = False
                 self.facing_right = True
                 self.flip_animation()
+        if keys[pygame.K_SPACE]:
+            self.is_attacking = True
+            self.attack_timer = self.attack_duration
 
-        if self.is_moving:
+
+        if self.is_attacking:
+            self.animate_attack()
+        elif self.is_moving:
             self.animate_walk()
         else:
             self.animate_idle()
@@ -80,6 +102,7 @@ class Character(pygame.sprite.Sprite):
     def flip_animation(self):
         self.idle_animation = [pygame.transform.flip(image, True, False) for image in self.idle_animation]
         self.walk_animation = [pygame.transform.flip(image, True, False) for image in self.walk_animation]
+        self.attack_animation = [pygame.transform.flip(image, True, False) for image in self.attack_animation]
 
     # Animação de idle
     def animate_idle(self):
@@ -94,3 +117,18 @@ class Character(pygame.sprite.Sprite):
         if self.frame_counter >= len(self.walk_animation):
             self.frame_counter = 0
         self.image = self.walk_animation[int(self.frame_counter)]
+
+    def animate_attack(self):
+        """Atualiza a animação de ataque e controla seu término."""
+        if self.attack_timer > 0:
+            self.frame_counter += self.attack_animation_speed
+            if int(self.frame_counter) >= len(self.attack_animation):
+                self.frame_counter = 0  # Reseta para repetir a animação
+            self.image = self.attack_animation[int(self.frame_counter)]
+
+            # Reduz o temporizador a cada ciclo de atualização
+            self.attack_timer -= 1
+        else:
+            # Termina o ataque quando o tempo expira
+            self.is_attacking = False
+            self.frame_counter = 0  # Reseta o quadro da animação

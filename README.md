@@ -53,7 +53,9 @@ project_directory/
 │   │   └── Enemy.py
 │
 ├── utils/                       # Funções utilitárias
-│   └── CameraGroup.py           # Classe para gerenciar a câmera do jogo
+│   ├── CameraGroup.py           # Classe para gerenciar a câmera do jogo
+│   ├── Cursor.py                # Classe para gerenciar o cursor do jogo
+│   └── helpers.py             # Constantes do jogo
 │
 ├── assets/                      # Imagens e sons do jogo
 │   ├── images/

@@ -1,9 +1,6 @@
-class Monster:
-    def __init__(self, name, hp, damage):
-        self.name = name
-        self.hp = hp
-        self.damage = damage
+from entities.enemies.Enemy import Enemy
 
-    def attack(self, target):
-        target.hp -= self.damage
-        print(f"{self.name} attacks {target.name} for {self.damage} damage!")
+class Goblin(Enemy):
+    def __init__(self, name, level):
+        super().__init__(name, level)
+        self.abilities = ["bash", "slash", "stab"]

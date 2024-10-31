@@ -72,8 +72,8 @@ class GameScene:
 
         character_x, character_y = self.character.rect.center
 
-        visible_tiles_x = range(character_x // self.TILE_SIZE - 20, character_x // self.TILE_SIZE + 20)
-        visible_tiles_y = range(character_y // self.TILE_SIZE - 10, character_y // self.TILE_SIZE + 10)
+        visible_tiles_x = range(character_x // self.TILE_SIZE - 10, character_x // self.TILE_SIZE + 10)
+        visible_tiles_y = range(character_y // self.TILE_SIZE - 5, character_y // self.TILE_SIZE + 5)
 
         # Desenha o mapa usando a câmera
         for row in visible_tiles_y:

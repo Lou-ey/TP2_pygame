@@ -20,14 +20,14 @@ class MainMenu:
         self.MAP_WIDTH = 2
         self.MAP_HEIGHT = 2
 
-        self.foam_animation = [pygame.image.load("../assets/images/map/water/00.png"),
-                               pygame.image.load("../assets/images/map/water/01.png"),
-                               pygame.image.load("../assets/images/map/water/01.png"),
-                               pygame.image.load("../assets/images/map/water/03.png"),
-                               pygame.image.load("../assets/images/map/water/04.png"),
-                               pygame.image.load("../assets/images/map/water/05.png"),
-                               pygame.image.load("../assets/images/map/water/06.png"),
-                               pygame.image.load("../assets/images/map/water/07.png")]
+        self.foam_animation = [pygame.image.load("../assets/images/map/water/00.png").convert_alpha(),
+                               pygame.image.load("../assets/images/map/water/01.png").convert_alpha(),
+                               pygame.image.load("../assets/images/map/water/01.png").convert_alpha(),
+                               pygame.image.load("../assets/images/map/water/03.png").convert_alpha(),
+                               pygame.image.load("../assets/images/map/water/04.png").convert_alpha(),
+                               pygame.image.load("../assets/images/map/water/05.png").convert_alpha(),
+                               pygame.image.load("../assets/images/map/water/06.png").convert_alpha(),
+                               pygame.image.load("../assets/images/map/water/07.png").convert_alpha()]
 
         self.animation_speed = 0.2
         self.frame_counter = 0

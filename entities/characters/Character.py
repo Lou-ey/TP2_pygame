@@ -1,6 +1,5 @@
 import pygame
 
-
 class Character(pygame.sprite.Sprite):
     def __init__(self, name, health, attack, defense, speed, x, y, width, height):
         super().__init__()

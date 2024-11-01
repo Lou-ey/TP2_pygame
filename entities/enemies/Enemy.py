@@ -8,6 +8,7 @@ class Enemy:
         self.defense = defense
         self.speed = speed
 
+
     def attack(self, target):
         # Calcula o dano considerando a defesa do alvo
         damage = max(0, self.attack - target.defense)

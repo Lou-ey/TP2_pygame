@@ -11,10 +11,12 @@ class TorchGoblin(Enemy, pygame.sprite.Sprite):
         self.y = y
 
         self.idle_animation = [pygame.image.load(f"assets/images/enemies/torch_goblin/idle/0{i}.png").convert_alpha() for i in range(1, 7)]
+        #self.die_animation = [pygame.image.load(f"assets/images/enemies/torch_goblin/die/0{i}.png").convert_alpha() for i in range(1, 7)]
 
         # Carrega a imagem e define o retângulo para posicionamento
         self.image = self.idle_animation[0]
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        #self.image = self.die_animation[0]
 
         self.idle_animation_speed = 0.2
         self.frame_counter = 0
@@ -26,14 +28,6 @@ class TorchGoblin(Enemy, pygame.sprite.Sprite):
         print("O torch_goblin usa um ataque rápido!")
 
     def update(self, player_position):
-        # Lógica para mover-se em direção ao jogador
-        #dx, dy = player_position[0] - self.rect.x, player_position[1] - self.rect.y
-        #distance = (dx**2 + dy**2) ** 0.5
-
-        #if distance > 0:
-            #self.rect.x += self.speed * dx / distance
-            #self.rect.y += self.speed * dy / distance
-
         self.animate_idle()
 
     def animate_idle(self):

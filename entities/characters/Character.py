@@ -14,28 +14,19 @@ class Character(pygame.sprite.Sprite):
         self.height = height
         self.displacement = 0
 
-        self.idle_animation = [pygame.image.load("assets/images/player/idle/00.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/idle/01.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/idle/02.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/idle/03.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/idle/04.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/idle/05.png").convert_alpha()]
+        self.idle_animation = [pygame.image.load(f"assets/images/player/idle/0{i}.png").convert_alpha() for i in range(1, 6)]
 
-        self.walk_animation = [pygame.image.load("assets/images/player/walk/00.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/walk/01.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/walk/02.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/walk/03.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/walk/04.png").convert_alpha(),
-                               pygame.image.load("assets/images/player/walk/05.png").convert_alpha()]
+        self.walk_animation = [pygame.image.load(f"assets/images/player/walk/0{i}.png").convert_alpha() for i in range(1, 6)]
 
         self.attack_animation = [pygame.image.load(f"assets/images/player/attack_1/0{i}.png").convert_alpha() for i in range(1, 6)]
 
+        #self.die_animation = [pygame.image.load(f"assets/images/player/die/0{i}.png").convert_alpha() for i in range(1, 7)]
+
         self.image = self.idle_animation[0]
-        self.rect = self.image.get_rect(topleft=(x, y))
         self.image = self.walk_animation[0]
-        self.rect = self.image.get_rect(topleft=(x, y))
         self.image = self.attack_animation[0]  # Use o primeiro quadro do ataque para começar
         self.rect = self.image.get_rect(topleft=(x, y))
+        #self.image = self.die_animation[0]
 
         for i in range(len(self.idle_animation)):
             self.idle_animation[i] = pygame.transform.scale(self.idle_animation[i], (self.width, self.height))
@@ -51,7 +42,7 @@ class Character(pygame.sprite.Sprite):
         self.frame_counter = 0
         self.idle_animation_speed = 0.1
         self.walk_animation_speed = 0.2
-        self.attack_animation_speed = 0.2
+        self.attack_animation_speed = 0.3
         self.is_moving = False
         self.is_attacking = False
         self.attack_duration = 15

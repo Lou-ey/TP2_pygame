@@ -29,6 +29,7 @@ class GameScene:
 
         # Instancia do personagem
         self.character = Character("Player", 100, 10, 5, 3, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
+
         self.camera.add(self.character) # Adiciona o personagem à camera
 
         self.num_trees = 2000
@@ -64,7 +65,7 @@ class GameScene:
             enemy_class = random.choice(enemy_types)
             new_enemy = enemy_class(enemy_x, enemy_y)  # Instancia um novo inimigo do tipo escolhido
 
-            # Adiciona o novo inimigo à câmera e à lista de sprites
+            # Adiciona o novo inimigo à camera e à lista de sprites
             self.camera.add(new_enemy)
 
 

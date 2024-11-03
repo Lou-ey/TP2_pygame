@@ -13,7 +13,7 @@ class GameScene:
         self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.FULLSCREEN)
         pygame.display.set_caption("Game Scene")
 
-        self.TILE_SIZE = 60
+        self.TILE_SIZE = 64
         self.MAP_WIDTH = 500
         self.MAP_HEIGHT = 500
         self.CURSOR_SIZE = (15, 23)
@@ -28,16 +28,21 @@ class GameScene:
         self.cursor.hide()  # Esconde o cursor
 
         # Instancia do personagem
-        self.character = Character("Player", 100, 10, 5, 3, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
-
+        self.character = Character("Player", 100, 10, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
         self.camera.add(self.character) # Adiciona o personagem à camera
+
+        # Instancia dos inimigos
+        self.enemies = pygame.sprite.Group()
 
         self.num_trees = 2000
 
         self.generate_trees(self.num_trees)
-        self.generate_enemies(10, [TorchGoblin])
 
         self.background_color = (39, 110, 58)
+
+        # Variável para controlar o tempo entre spawns
+        self.spawn_interval = 1000  # 500 milissegundos (2 spawns por segundo)
+        self.last_spawn_time = pygame.time.get_ticks()
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -50,24 +55,29 @@ class GameScene:
             tree = Tree(tree_x, tree_y, self.TILE_SIZE)
             self.camera.add(tree)  # Adiciona as árvores à câmera
 
-    def generate_enemies(self, num_enemies, enemy_types):
-        """
-        Gera inimigos no mapa.
-        - `num_enemies`: número total de inimigos a gerar.
-        - `enemy_types`: lista de classes de inimigos diferentes para gerar aleatoriamente.
-        """
-        for _ in range(num_enemies):
-            # Define a posição aleatória do inimigo
-            enemy_x = self.MAP_WIDTH * self.TILE_SIZE // 2
-            enemy_y = self.MAP_HEIGHT * self.TILE_SIZE // 2
+    def spawn_enemy(self, enemy_class):
+        """Função para spawnar inimigos fora da área visível, mas perto do personagem."""
+        visible_margin = 100  # Margem além da área visível
+        spawn_margin = 50     # Margem de spawn adicional ao redor da área visível
 
-            # Seleciona aleatoriamente o tipo de inimigo
-            enemy_class = random.choice(enemy_types)
-            new_enemy = enemy_class(enemy_x, enemy_y)  # Instancia um novo inimigo do tipo escolhido
+        # Centro do personagem
+        character_x, character_y = self.character.rect.center
 
-            # Adiciona o novo inimigo à camera e à lista de sprites
-            self.camera.add(new_enemy)
+        # Posição de spawn
+        spawn_x, spawn_y = character_x, character_y
+        if random.choice([True, False]):
+            # Horizontalmente além da área visível
+            spawn_x += random.choice([-1, 1]) * (self.SCREEN_WIDTH // 2 + visible_margin + spawn_margin)
+            spawn_y += random.randint(-self.SCREEN_HEIGHT // 2, self.SCREEN_HEIGHT // 2)
+        else:
+            # Verticalmente além da área visível
+            spawn_x += random.randint(-self.SCREEN_WIDTH // 2, self.SCREEN_WIDTH // 2)
+            spawn_y += random.choice([-1, 1]) * (self.SCREEN_HEIGHT // 2 + visible_margin + spawn_margin)
 
+        # Cria e adiciona o inimigo
+        new_enemy = enemy_class(spawn_x, spawn_y)
+        self.enemies.add(new_enemy)
+        self.camera.add(new_enemy)
 
     def load_grass_assets(self):
         grass_tile = pygame.image.load("assets/images/map/ground/grass_tile.png").convert_alpha()
@@ -82,6 +92,12 @@ class GameScene:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LCTRL:
+                    self.cursor.show()
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LCTRL:
+                    self.cursor.hide()
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -89,6 +105,16 @@ class GameScene:
         self.camera.center_on(self.character)  # Centraliza a câmera no personagem
         self.camera.update(keys)
         self.cursor.update()
+
+        # Controla o tempo para spawnar novos inimigos
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_spawn_time >= self.spawn_interval:
+            self.spawn_enemy(TorchGoblin)  # Spawna um novo goblin fora da area visível
+            self.last_spawn_time = current_time
+
+        player_position = self.character.rect.center
+        for enemy in self.enemies:
+            enemy.update(player_position)
 
     def culling(self, character_x, character_y):
         # Define as coordenadas do personagem em tiles

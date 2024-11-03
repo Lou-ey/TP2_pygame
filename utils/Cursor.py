@@ -21,3 +21,6 @@ class Cursor(pygame.sprite.Sprite):
 
     def hide(self):
         self.image = None
+
+    def show(self):
+        self.image = pygame.image.load(self.image_path).convert_alpha()

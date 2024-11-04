@@ -55,6 +55,7 @@ class GameScene:
             tree = Tree(tree_x, tree_y, self.TILE_SIZE)
             self.camera.add(tree)  # Adiciona as árvores à câmera
 
+
     def spawn_enemy(self, enemy_class):
         """Função para spawnar inimigos fora da área visível, mas perto do personagem."""
         visible_margin = 100  # Margem além da área visível
@@ -98,6 +99,7 @@ class GameScene:
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.hide()
+
 
     def update(self):
         keys = pygame.key.get_pressed()

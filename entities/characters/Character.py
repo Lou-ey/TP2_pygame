@@ -48,7 +48,7 @@ class Character(pygame.sprite.Sprite):
         self.is_moving = False
 
         # Inicia o ataque com o botão esquerdo do mouse e reseta o contador de quadro
-        if pygame.mouse.get_pressed()[0] and not self.is_attacking:
+        if keys[pygame.K_SPACE] and not self.is_attacking:
             self.is_attacking = True
             self.attack_timer = self.attack_duration
             self.frame_counter = 0

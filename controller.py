@@ -4,8 +4,6 @@ from scenes.game_scene import GameScene
 
 pygame.init()
 
-
-
 def main():
     game_scene = GameScene() # Instancia a cena do jogo
     while True:

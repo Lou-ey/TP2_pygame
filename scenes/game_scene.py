@@ -40,9 +40,12 @@ class GameScene:
 
         self.background_color = (39, 110, 58)
 
+        self.enemies_spawned_limit = 10 # Limite de inimigos spawnados
+
         # Variável para controlar o tempo entre spawns
-        self.spawn_interval = 1000  # 500 milissegundos (2 spawns por segundo)
+        self.spawn_interval = 1000 # 1 segundo
         self.last_spawn_time = pygame.time.get_ticks()
+
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -109,10 +112,13 @@ class GameScene:
         self.cursor.update()
 
         # Controla o tempo para spawnar novos inimigos
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_spawn_time >= self.spawn_interval:
+        current_time = pygame.time.get_ticks() # tick atual
+        num_current_enemies = len(self.enemies) # Número de inimigos atualmente na tela
+        if current_time - self.last_spawn_time >= self.spawn_interval and num_current_enemies < self.enemies_spawned_limit:
             self.spawn_enemy(TorchGoblin)  # Spawna um novo goblin fora da area visível
             self.last_spawn_time = current_time
+        else:
+            self.enemies_spawned_limit = 100
 
         player_position = self.character.rect.center
         for enemy in self.enemies:

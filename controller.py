@@ -1,6 +1,6 @@
 import pygame
 from pygame.time import Clock
-from scenes.game_scene import GameScene
+from scenes.GameScene import GameScene
 
 pygame.init()
 

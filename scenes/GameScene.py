@@ -103,7 +103,6 @@ class GameScene:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.hide()
 
-
     def update(self):
         keys = pygame.key.get_pressed()
         self.character.update(keys)

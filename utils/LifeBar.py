@@ -1,7 +1,7 @@
 import pygame
 
 class LifeBar(pygame.sprite.Sprite):
-    def __init__(self, max_health, current_health, width=100, height=10, color=(255, 0, 0), bg_color=(50, 50, 50)):
+    def __init__(self, max_health, current_health, width=65, height=10, color=(255, 0, 0), bg_color=(50, 50, 50)):
         super().__init__()
         self.max_health = max_health
         self.current_health = current_health

@@ -105,27 +105,6 @@ class GameScene:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.hide()
 
-    def update(self):
-        keys = pygame.key.get_pressed()
-        self.character.update(keys)
-        self.camera.center_on(self.character)  # Centraliza a câmera no personagem
-        self.camera.update(keys)
-        self.cursor.update()
-
-        # Controla o tempo para spawnar novos inimigos
-        current_time = pygame.time.get_ticks() # tick atual
-        num_current_enemies = len(self.enemies) # Número de inimigos atualmente na tela
-        if current_time - self.last_spawn_time >= self.spawn_interval and num_current_enemies < self.enemies_spawned_limit: #
-            self.spawn_enemy(TorchGoblin)  # Spawna um novo goblin fora da area visível
-            self.last_spawn_time = current_time
-        else:
-            # para de spawnar inimigos
-            pass
-
-        player_position = self.character.rect.center
-        for enemy in self.enemies:
-            enemy.update(player_position)
-
     def culling(self, character_x, character_y):
         character_tile_x = character_x // self.TILE_SIZE
         character_tile_y = character_y // self.TILE_SIZE
@@ -149,6 +128,27 @@ class GameScene:
                 pos_y = row * self.TILE_SIZE - self.camera.offset.y
                 self.SCREEN.blit(tile_asset, (pos_x, pos_y))
 
+    def update(self):
+        keys = pygame.key.get_pressed()
+        self.character.update(keys)
+        self.camera.center_on(self.character)  # Centraliza a câmera no personagem
+        self.camera.update(keys)
+        self.cursor.update()
+
+        # Controla o tempo para spawnar novos inimigos
+        current_time = pygame.time.get_ticks() # tick atual
+        num_current_enemies = len(self.enemies) # Número de inimigos atualmente na tela
+        if current_time - self.last_spawn_time >= self.spawn_interval and num_current_enemies < self.enemies_spawned_limit: #
+            self.spawn_enemy(TorchGoblin)  # Spawna um novo goblin fora da area visível
+            self.last_spawn_time = current_time
+        else:
+            # para de spawnar inimigos
+            pass
+
+        player_position = self.character.rect.center
+        for enemy in self.enemies:
+            enemy.update(player_position)
+
     def render(self):
         self.SCREEN.fill(self.background_color)
 
@@ -158,9 +158,10 @@ class GameScene:
         # Desenha todos os sprites controlados pela câmera
         self.camera.draw()
 
-        # Renderizar a barra de vida do personagem
-        bar_offset_y = 15  # Distância acima do personagem
-        bar_position = (self.character.rect.x - self.camera.offset.x,
+        # Render a barra de vida do personagem
+        bar_offset_y = 10  # Distância acima do personagem
+        # Posição da barra de vida
+        bar_position = (self.character.rect.x + 50 - self.camera.offset.x,
                         self.character.rect.y - self.camera.offset.y - bar_offset_y)
         self.SCREEN.blit(self.character.health_bar.image, bar_position)
 

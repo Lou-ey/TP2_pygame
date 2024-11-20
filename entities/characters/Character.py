@@ -25,7 +25,7 @@ class Character(pygame.sprite.Sprite):
         self.image = self.idle_animation[0]
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
-        self.health_bar = LifeBar(self.max_health, self.current_health, self.width, 10, (0, 255, 0), (255, 0, 0))
+        self.health_bar = LifeBar(self.max_health, self.current_health, 65, 10, (0, 255, 0), (255, 0, 0))
 
         # Escala das animações
         for i in range(len(self.idle_animation)):
@@ -43,7 +43,7 @@ class Character(pygame.sprite.Sprite):
         self.attack_animation_speed = 0.25
         self.is_moving = False
         self.is_attacking = False
-        self.attack_duration = 60
+        self.attack_duration = 45
         self.attack_timer = 0
         self.facing_left = False
         self.facing_right = True
@@ -126,3 +126,7 @@ class Character(pygame.sprite.Sprite):
     def take_damage(self, damage):
         self.current_health = max(0, self.current_health - damage)
         self.health_bar.update(self.current_health)
+
+    def die(self):
+        if self.current_health == 0:
+            self.kill()

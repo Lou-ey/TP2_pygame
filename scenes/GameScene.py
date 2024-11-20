@@ -97,6 +97,10 @@ class GameScene:
                     quit()
                 if event.key == pygame.K_LCTRL:
                     self.cursor.show()
+                ### apenas para teste
+                if event.key == pygame.K_LSHIFT:
+                    self.character.take_damage(10)
+                ###
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.hide()
@@ -153,6 +157,12 @@ class GameScene:
 
         # Desenha todos os sprites controlados pela câmera
         self.camera.draw()
+
+        # Renderizar a barra de vida do personagem
+        bar_offset_y = 15  # Distância acima do personagem
+        bar_position = (self.character.rect.x - self.camera.offset.x,
+                        self.character.rect.y - self.camera.offset.y - bar_offset_y)
+        self.SCREEN.blit(self.character.health_bar.image, bar_position)
 
         # Desenha o cursor se ele tiver uma imagem
         if self.cursor.image:

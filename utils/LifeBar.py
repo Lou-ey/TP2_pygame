@@ -24,7 +24,7 @@ class LifeBar(pygame.sprite.Sprite):
         health_ratio = max(0, self.current_health / self.max_health)  # Garante que não seja menor que 0
         health_width = int(self.width * health_ratio)
 
-        # Desenha a barra de saúde (cor principal)
+        # Desenha a barra de vida
         health_rect = pygame.Rect(0, 0, health_width, self.height)
         pygame.draw.rect(self.image, self.color, health_rect)
 

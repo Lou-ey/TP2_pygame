@@ -40,7 +40,7 @@ class GameScene:
 
         self.background_color = (39, 110, 58)
 
-        self.enemies_spawned_limit = 10 # Limite de inimigos spawnados
+        self.enemies_spawned_limit = 100
 
         # Variável para controlar o tempo entre spawns
         self.spawn_interval = 1000 # 1 segundo
@@ -57,7 +57,6 @@ class GameScene:
             tree_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             tree = Tree(tree_x, tree_y, self.TILE_SIZE)
             self.camera.add(tree)  # Adiciona as árvores à câmera
-
 
     def spawn_enemy(self, enemy_class):
         """Função para spawnar inimigos fora da área visível, mas perto do personagem."""
@@ -96,7 +95,6 @@ class GameScene:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     quit()
-            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.show()
             if event.type == pygame.KEYUP:
@@ -113,50 +111,34 @@ class GameScene:
         # Controla o tempo para spawnar novos inimigos
         current_time = pygame.time.get_ticks() # tick atual
         num_current_enemies = len(self.enemies) # Número de inimigos atualmente na tela
-        if current_time - self.last_spawn_time >= self.spawn_interval and num_current_enemies < self.enemies_spawned_limit:
+        if current_time - self.last_spawn_time >= self.spawn_interval and num_current_enemies < self.enemies_spawned_limit: #
             self.spawn_enemy(TorchGoblin)  # Spawna um novo goblin fora da area visível
             self.last_spawn_time = current_time
         else:
-            self.enemies_spawned_limit = 100
+            # para de spawnar inimigos
+            pass
 
         player_position = self.character.rect.center
         for enemy in self.enemies:
             enemy.update(player_position)
 
     def culling(self, character_x, character_y):
-        # Define as coordenadas do personagem em tiles
         character_tile_x = character_x // self.TILE_SIZE
         character_tile_y = character_y // self.TILE_SIZE
 
-        # Quantidade de tiles visíveis ao redor do personagem
+        # Define os limites visíveis
         visible_range_x = 20
-        visible_range_y = 10
+        visible_range_y = 15
 
-        # Ajusta a área visível em X, considerando as bordas do mapa
-        if character_tile_x < visible_range_x:
-            # Quando o personagem está perto do lado esquerdo do mapa
-            visible_tiles_x = range(0, visible_range_x * 2)
-        elif character_tile_x > self.MAP_WIDTH - visible_range_x:
-            # Quando o personagem está perto do lado direito do mapa
-            visible_tiles_x = range(self.MAP_WIDTH - visible_range_x * 2, self.MAP_WIDTH)
-        else:
-            # Centro da área visível no personagem
-            visible_tiles_x = range(character_tile_x - visible_range_x, character_tile_x + visible_range_x)
+        # Calcula os limites da área visível considerando as bordas do mapa
+        min_x = max(0, character_tile_x - visible_range_x)
+        max_x = min(self.MAP_WIDTH, character_tile_x + visible_range_x)
+        min_y = max(0, character_tile_y - visible_range_y)
+        max_y = min(self.MAP_HEIGHT, character_tile_y + visible_range_y)
 
-        # Ajusta a área visível em Y, considerando as bordas do mapa
-        if character_tile_y < visible_range_y:
-            # Quando o personagem está perto do topo do mapa
-            visible_tiles_y = range(0, visible_range_y * 2)
-        elif character_tile_y > self.MAP_HEIGHT - visible_range_y:
-            # Quando o personagem está perto da parte inferior do mapa
-            visible_tiles_y = range(self.MAP_HEIGHT - visible_range_y * 2, self.MAP_HEIGHT)
-        else:
-            # Centro da área visível no personagem
-            visible_tiles_y = range(character_tile_y - visible_range_y, character_tile_y + visible_range_y)
-
-        # Desenha o mapa usando a câmera
-        for row in visible_tiles_y:
-            for col in visible_tiles_x:
+        # Desenha o mapa dentro da área visível
+        for row in range(min_y, max_y):
+            for col in range(min_x, max_x):
                 tile = self.map_layout[row][col]
                 tile_asset = self.tile_assets[tile]
                 pos_x = col * self.TILE_SIZE - self.camera.offset.x
@@ -167,7 +149,6 @@ class GameScene:
         self.SCREEN.fill(self.background_color)
 
         character_x, character_y = self.character.rect.center
-
         self.culling(character_x, character_y)
 
         # Desenha todos os sprites controlados pela câmera

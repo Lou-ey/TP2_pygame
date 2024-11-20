@@ -1,10 +1,12 @@
 import pygame
+from utils.LifeBar import LifeBar
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, health, attack, defense, speed, x, y, width, height):
+    def __init__(self, name, max_health, attack, defense, speed, x, y, width, height):
         super().__init__()
         self.name = name
-        self.health = health
+        self.max_health = max_health
+        self.current_health = max_health
         self.attack = attack
         self.defense = defense
         self.speed = speed
@@ -22,6 +24,8 @@ class Character(pygame.sprite.Sprite):
         # Ajuste das imagens e criação do retângulo de colisão
         self.image = self.idle_animation[0]
         self.rect = self.image.get_rect(center=(self.x, self.y))
+
+        self.health_bar = LifeBar(self.max_health, self.current_health, self.width, 10, (0, 255, 0), (255, 0, 0))
 
         # Escala das animações
         for i in range(len(self.idle_animation)):
@@ -118,3 +122,7 @@ class Character(pygame.sprite.Sprite):
             # Termina o ataque e reseta o estado
             self.is_attacking = False
             self.frame_counter = 0
+
+    def take_damage(self, damage):
+        self.current_health = max(0, self.current_health - damage)
+        self.health_bar.update(self.current_health)

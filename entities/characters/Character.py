@@ -1,12 +1,16 @@
 import pygame
 from utils.LifeBar import LifeBar
+from utils.XPBar import XPBar
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, max_health, attack, defense, speed, x, y, width, height):
+    def __init__(self, name, max_health, max_xp, attack, defense, speed, x, y, width, height):
         super().__init__()
         self.name = name
         self.max_health = max_health
         self.current_health = max_health
+        self.max_xp = max_xp
+        self.current_xp = 0
+        self.current_level = 1
         self.attack = attack
         self.defense = defense
         self.speed = speed
@@ -26,6 +30,7 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
         self.health_bar = LifeBar(self.max_health, self.current_health, 65, 10, (0, 255, 0), (255, 0, 0))
+        self.xp_bar = XPBar(self.max_xp, self.current_xp, 100, 10, (0, 50, 255), (50, 50, 50))
 
         # Escala das animações
         for i in range(len(self.idle_animation)):
@@ -123,6 +128,13 @@ class Character(pygame.sprite.Sprite):
             self.is_attacking = False
             self.frame_counter = 0
 
+    def attack(self, enemy):
+        """Ataque do personagem."""
+        enemy.health -= self.attack - enemy.defense
+        if enemy.health <= 0:
+            enemy.kill()
+            return True
+
     def take_damage(self, damage):
         self.current_health = max(0, self.current_health - damage)
         self.health_bar.update(self.current_health)
@@ -130,3 +142,17 @@ class Character(pygame.sprite.Sprite):
     def die(self):
         if self.current_health == 0:
             self.kill()
+
+    def gain_xp(self, xp):
+        self.xp_bar.current_xp += xp
+        if self.xp_bar.current_xp >= self.xp_bar.max_xp:
+            self.level_up()
+            self.xp_bar.current_xp = 0
+        self.xp_bar.update(self.xp_bar.current_xp)
+
+    def level_up(self):
+        if self.xp_bar.current_xp == self.xp_bar.max_xp:
+            self.current_level += 1
+            self.xp_bar.max_xp *= 2
+            self.xp_bar.current_xp = 0
+            self.xp_bar.update_bar()

@@ -1,3 +1,5 @@
+from cProfile import label
+
 import pygame
 from entities.characters.Character import Character
 from entities.enemies.types.TorchGoblin import TorchGoblin
@@ -28,7 +30,7 @@ class GameScene:
         self.cursor.hide()  # Esconde o cursor
 
         # Instancia do personagem
-        self.character = Character("Player", 100, 10, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
+        self.character = Character("Player", 100, 1000, 10, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
         self.camera.add(self.character) # Adiciona o personagem à camera
 
         # Instancia dos inimigos
@@ -40,12 +42,11 @@ class GameScene:
 
         self.background_color = (39, 110, 58)
 
-        self.enemies_spawned_limit = 100
+        self.enemies_spawned_limit = 50
 
         # Variável para controlar o tempo entre spawns
         self.spawn_interval = 1000 # 1 segundo
         self.last_spawn_time = pygame.time.get_ticks()
-
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -100,6 +101,8 @@ class GameScene:
                 ### apenas para teste
                 if event.key == pygame.K_LSHIFT:
                     self.character.take_damage(10)
+                if event.key == pygame.K_CAPSLOCK:
+                    self.character.gain_xp(100)
                 ###
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LCTRL:
@@ -134,6 +137,7 @@ class GameScene:
         self.camera.center_on(self.character)  # Centraliza a câmera no personagem
         self.camera.update(keys)
         self.cursor.update()
+        self.character.die()
 
         # Controla o tempo para spawnar novos inimigos
         current_time = pygame.time.get_ticks() # tick atual
@@ -159,11 +163,15 @@ class GameScene:
         self.camera.draw()
 
         # Render a barra de vida do personagem
-        bar_offset_y = 10  # Distância acima do personagem
+        health_bar_offset_y = 10  # Distância acima do personagem
         # Posição da barra de vida
-        bar_position = (self.character.rect.x + 50 - self.camera.offset.x,
-                        self.character.rect.y - self.camera.offset.y - bar_offset_y)
-        self.SCREEN.blit(self.character.health_bar.image, bar_position)
+        health_bar_position = (self.character.rect.x + 50 - self.camera.offset.x,
+                            self.character.rect.y - self.camera.offset.y - health_bar_offset_y)
+        self.SCREEN.blit(self.character.health_bar.image, health_bar_position)
+
+        self.SCREEN.blit(self.camera.xp_bar.image, (10, 10))
+        level_label = pygame.font.Font(None, 30).render(f"Level: {self.character.current_level}", True, (255, 255, 255))
+        self.SCREEN.blit(level_label, (10, 30))
 
         # Desenha o cursor se ele tiver uma imagem
         if self.cursor.image:

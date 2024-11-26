@@ -1,5 +1,3 @@
-from cProfile import label
-
 import pygame
 from entities.characters.Character import Character
 from entities.enemies.types.TorchGoblin import TorchGoblin

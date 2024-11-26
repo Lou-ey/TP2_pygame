@@ -1,6 +1,7 @@
 import pygame
 from utils.LifeBar import LifeBar
 from utils.XPBar import XPBar
+from entities.enemies.Enemy import Enemy
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, name, max_health, max_xp, attack, defense, speed, x, y, width, height):
@@ -135,13 +136,13 @@ class Character(pygame.sprite.Sprite):
             enemy.kill()
             return True
 
-    def take_damage(self, damage):
-        self.current_health = max(0, self.current_health - damage)
-        self.health_bar.update(self.current_health)
-
     def die(self):
         if self.current_health == 0:
             self.kill()
+
+    def take_damage(self, damage):
+        self.current_health = max(0, self.current_health - damage)
+        self.health_bar.update(self.current_health)
 
     def gain_xp(self, xp):
         self.xp_bar.current_xp += xp

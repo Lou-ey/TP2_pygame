@@ -22,7 +22,7 @@ class XPBar(pygame.sprite.Sprite):
 
         # Calcula a largura proporcional da barra de saúde
         xp_ratio = max(0, self.current_xp / self.max_xp)  # Garante que não seja menor que 0
-        xp_width = int(self.width * xp_ratio)
+        xp_width = int(self.width * xp_ratio) # Largura da barra de xp
 
         # Desenha a barra de xp
         xp_rect = pygame.Rect(0, 0, xp_width, self.height)

@@ -1,5 +1,6 @@
 import pygame
 import random
+import os.path
 from entities.characters.Character import Character
 from entities.enemies.types.TorchGoblin import TorchGoblin
 from entities.objects.Tree import Tree
@@ -49,7 +50,7 @@ class GameScene:
         self.music = "assets/sounds/game/The_Icy_Cave .wav"
         pygame.mixer.init()
         pygame.mixer.music.load(self.music)
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0.05)
         pygame.mixer.music.play(-1)
 
     def stop_music(self):
@@ -106,8 +107,8 @@ class GameScene:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.show()
                 ### apenas para teste
-                if event.key == pygame.K_LSHIFT:
-                    self.character.take_damage(10)
+                #if event.key == pygame.K_LSHIFT:
+                #    self.character.take_damage(10)
                 if event.key == pygame.K_CAPSLOCK:
                     self.character.gain_xp(100)
                 ###
@@ -160,6 +161,16 @@ class GameScene:
         for enemy in self.enemies:
             enemy.update(player_position)
 
+            # Verifica se o inimigo colidiu com o personagem
+            if self.character.rect.colliderect(enemy.rect):
+                self.character.take_damage(enemy.attack)
+
+            # Usar retângulos reduzidos para evitar colisões falsas
+            reduced_character_rect = self.character.rect.inflate(-20, -20)  # Reduz tamanho do rect
+            reduced_enemy_rect = enemy.rect.inflate(-10, -10)
+            if reduced_character_rect.colliderect(reduced_enemy_rect):
+                self.character.take_damage(enemy.attack)
+
     def render(self):
         self.SCREEN.fill(self.background_color)
 
@@ -177,12 +188,20 @@ class GameScene:
         self.SCREEN.blit(self.character.health_bar.image, health_bar_position)
 
         self.SCREEN.blit(self.character.xp_bar.image, (10, 10))
-        level_label = pygame.font.Font(None, 30).render(f"Level: {self.character.current_level}", True, (255, 255, 255))
+        level_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30).render(f"Level: {self.character.current_level}", True, (255, 255, 255))
         self.SCREEN.blit(level_label, (10, 30))
 
         # Desenha o cursor se ele tiver uma imagem
         if self.cursor.image:
             self.cursor.draw(self.SCREEN)
+
+        # show lines of the character collider
+        pygame.draw.rect(self.SCREEN, (0, 0, 255), self.character.rect, 2)
+        print(self.character.rect)
+
+        # show lines of enemy the collider
+        for enemy in self.enemies:
+            pygame.draw.rect(self.SCREEN, (255, 0, 0), enemy.rect, 2)
 
         pygame.display.update()
 
@@ -190,3 +209,4 @@ class GameScene:
         self.handle_events()
         self.update()
         self.render()
+

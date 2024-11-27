@@ -145,6 +145,7 @@ class MainMenu:
         sand_x = (self.width - self.sand_image.get_width()) // 2 + int(self.width * 0.1)
         sand_y = (self.height - self.sand_image.get_height()) // 2 + int(self.height * 0.4)
         self.screen.blit(self.sand_image, (sand_x, sand_y))
+        self.cursor.draw(self.screen)
         pygame.display.flip()
 
 
@@ -161,6 +162,5 @@ class MainMenu:
             self.update()
             self.render()
             self.clock.tick(60)
-
 menu = MainMenu()
 menu.run()

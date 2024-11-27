@@ -1,10 +1,10 @@
 import pygame
+import random
 from entities.characters.Character import Character
 from entities.enemies.types.TorchGoblin import TorchGoblin
 from entities.objects.Tree import Tree
 from utils.CameraGroup import CameraGroup
 from utils.Cursor import Cursor
-import random
 
 class GameScene:
     def __init__(self):
@@ -45,6 +45,15 @@ class GameScene:
         # Variável para controlar o tempo entre spawns
         self.spawn_interval = 1000 # 1 segundo
         self.last_spawn_time = pygame.time.get_ticks()
+
+        self.music = "assets/sounds/game/The_Icy_Cave .wav"
+        pygame.mixer.init()
+        pygame.mixer.music.load(self.music)
+        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.play(-1)
+
+    def stop_music(self):
+        pygame.mixer.music.stop()
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -161,13 +170,13 @@ class GameScene:
         self.camera.draw()
 
         # Render a barra de vida do personagem
-        health_bar_offset_y = 10  # Distância acima do personagem
+        health_bar_offset_y = 5  # Distância acima do personagem
         # Posição da barra de vida
-        health_bar_position = (self.character.rect.x + 50 - self.camera.offset.x,
-                            self.character.rect.y - self.camera.offset.y - health_bar_offset_y)
+        health_bar_position = (self.character.rect.x + 35 - self.camera.offset.x,
+                            self.character.rect.y - self.camera.offset.y - health_bar_offset_y) # Centraliza a barra de vida
         self.SCREEN.blit(self.character.health_bar.image, health_bar_position)
 
-        self.SCREEN.blit(self.camera.xp_bar.image, (10, 10))
+        self.SCREEN.blit(self.character.xp_bar.image, (10, 10))
         level_label = pygame.font.Font(None, 30).render(f"Level: {self.character.current_level}", True, (255, 255, 255))
         self.SCREEN.blit(level_label, (10, 30))
 

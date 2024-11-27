@@ -1,5 +1,4 @@
 import pygame
-from utils.XPBar import XPBar
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self, screen_width, screen_height, map_width, map_height):
@@ -10,8 +9,6 @@ class CameraGroup(pygame.sprite.Group):
         self.map_width = map_width
         self.map_height = map_height
         self.offset = pygame.math.Vector2()
-
-        self.xp_bar = XPBar(100, 0, self.screen_width - 20, 10, (0, 50, 255), (50, 50, 50))
 
     def center_on(self, target):
         # Centraliza a camera no alvo

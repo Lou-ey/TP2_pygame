@@ -11,6 +11,8 @@ class Character(pygame.sprite.Sprite):
         self.current_health = max_health
         self.max_xp = max_xp
         self.current_xp = 0
+        self.health_bar_width = 100
+        self.xp_bar_width = pygame.display.Info().current_w - 20
         self.current_level = 1
         self.attack = attack
         self.defense = defense
@@ -30,8 +32,8 @@ class Character(pygame.sprite.Sprite):
         self.image = self.idle_animation[0]
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
-        self.health_bar = LifeBar(self.max_health, self.current_health, 65, 10, (0, 255, 0), (255, 0, 0))
-        self.xp_bar = XPBar(self.max_xp, self.current_xp, 100, 10, (0, 50, 255), (50, 50, 50))
+        self.health_bar = LifeBar(self.max_health, self.current_health, self.health_bar_width)
+        self.xp_bar = XPBar(self.max_xp, self.current_xp, self.xp_bar_width)
 
         # Escala das animações
         for i in range(len(self.idle_animation)):

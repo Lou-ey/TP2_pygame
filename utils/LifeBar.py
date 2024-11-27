@@ -1,14 +1,14 @@
 import pygame
 
 class LifeBar(pygame.sprite.Sprite):
-    def __init__(self, max_health, current_health, width=65, height=10, color=(255, 0, 0), bg_color=(50, 50, 50)):
+    def __init__(self, max_health, current_health, width):
         super().__init__()
         self.max_health = max_health
         self.current_health = current_health
         self.width = width
-        self.height = height
-        self.color = color
-        self.bg_color = bg_color
+        self.height = 10
+        self.color = (0, 255, 0)
+        self.bg_color = (255, 0, 0)
 
         # Cria a superfície da barra de vida
         self.image = pygame.Surface((self.width, self.height))

@@ -22,6 +22,7 @@ class MainMenu:
         self.TILE_SIZE = 60
         self.MAP_WIDTH = 2
         self.MAP_HEIGHT = 2
+        #teste
 
         #self.boneco1 = pygame.image.load("../assets/images/player/player_idle/00.png").convert_alpha()
 

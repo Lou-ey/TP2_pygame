@@ -1,10 +1,19 @@
 import pygame
+from utils.LifeBar import LifeBar
+from utils.XPBar import XPBar
+from entities.enemies.Enemy import Enemy
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, health, attack, defense, speed, x, y, width, height):
+    def __init__(self, name, max_health, max_xp, attack, defense, speed, x, y, width, height):
         super().__init__()
         self.name = name
-        self.health = health
+        self.max_health = max_health
+        self.current_health = max_health
+        self.max_xp = max_xp
+        self.current_xp = 0
+        self.health_bar_width = 100
+        self.xp_bar_width = pygame.display.Info().current_w - 20
+        self.current_level = 1
         self.attack = attack
         self.defense = defense
         self.speed = speed
@@ -23,6 +32,9 @@ class Character(pygame.sprite.Sprite):
         self.image = self.idle_animation[0]
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
+        self.health_bar = LifeBar(self.max_health, self.current_health, self.health_bar_width)
+        self.xp_bar = XPBar(self.max_xp, self.current_xp, self.xp_bar_width)
+
         # Escala das animações
         for i in range(len(self.idle_animation)):
             self.idle_animation[i] = pygame.transform.scale(self.idle_animation[i], (self.width, self.height))
@@ -39,7 +51,7 @@ class Character(pygame.sprite.Sprite):
         self.attack_animation_speed = 0.25
         self.is_moving = False
         self.is_attacking = False
-        self.attack_duration = 60
+        self.attack_duration = 45
         self.attack_timer = 0
         self.facing_left = False
         self.facing_right = True
@@ -48,7 +60,7 @@ class Character(pygame.sprite.Sprite):
         self.is_moving = False
 
         # Inicia o ataque com o botão esquerdo do mouse e reseta o contador de quadro
-        if pygame.mouse.get_pressed()[0] and not self.is_attacking:
+        if keys[pygame.K_SPACE] and not self.is_attacking:
             self.is_attacking = True
             self.attack_timer = self.attack_duration
             self.frame_counter = 0
@@ -118,3 +130,32 @@ class Character(pygame.sprite.Sprite):
             # Termina o ataque e reseta o estado
             self.is_attacking = False
             self.frame_counter = 0
+
+    def attack(self, enemy):
+        """Ataque do personagem."""
+        enemy.health -= self.attack - enemy.defense
+        if enemy.health <= 0:
+            enemy.kill()
+            return True
+
+    def die(self):
+        if self.current_health == 0:
+            self.kill()
+
+    def take_damage(self, damage):
+        self.current_health = max(0, self.current_health - damage)
+        self.health_bar.update(self.current_health)
+
+    def gain_xp(self, xp):
+        self.xp_bar.current_xp += xp
+        if self.xp_bar.current_xp >= self.xp_bar.max_xp:
+            self.level_up()
+            self.xp_bar.current_xp = 0
+        self.xp_bar.update(self.xp_bar.current_xp)
+
+    def level_up(self):
+        if self.xp_bar.current_xp == self.xp_bar.max_xp:
+            self.current_level += 1
+            self.xp_bar.max_xp *= 2
+            self.xp_bar.current_xp = 0
+            self.xp_bar.update_bar()

@@ -1,10 +1,8 @@
 import pygame
 from pygame.time import Clock
-from scenes.game_scene import GameScene
+from scenes.GameScene import GameScene
 
 pygame.init()
-
-
 
 def main():
     game_scene = GameScene() # Instancia a cena do jogo

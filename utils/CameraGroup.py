@@ -31,6 +31,3 @@ class CameraGroup(pygame.sprite.Group):
 
     def update(self, *args):
         super().update(*args)  # Passa as teclas pressionadas para os sprites do grupo
-
-
-

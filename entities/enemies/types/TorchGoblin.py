@@ -26,8 +26,8 @@ class TorchGoblin(Enemy, pygame.sprite.Sprite):
 
     def update(self, player_position):
         self.move_towards_player(player_position)
-        #print(player_position)
         self.animate_walk()
+        #self.avoid_overlapping(enemies)
 
     def animate_idle(self):
         self.frame_counter += self.idle_animation_speed

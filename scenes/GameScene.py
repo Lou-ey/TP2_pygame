@@ -4,14 +4,17 @@ import os.path
 from entities.characters.Character import Character
 from entities.enemies.types.TorchGoblin import TorchGoblin
 from entities.objects.Tree import Tree
+from entities.objects.Stone import Stone
+from entities.objects.Mushroom import Mushroom
+from entities.objects.Bush import Bush
 from utils.CameraGroup import CameraGroup
 from utils.Cursor import Cursor
 
 class GameScene:
     def __init__(self):
-        self.SCREEN_WIDTH = pygame.display.Info().current_w
-        self.SCREEN_HEIGHT = pygame.display.Info().current_h
-        self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.FULLSCREEN)
+        self.SCREEN_WIDTH = 800 #pygame.display.Info().current_w
+        self.SCREEN_HEIGHT = 600 #pygame.display.Info().current_h
+        self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Game Scene")
 
         self.TILE_SIZE = 64
@@ -36,8 +39,14 @@ class GameScene:
         self.enemies = pygame.sprite.Group()
 
         self.num_trees = 2000
+        self.num_stones = 1000
+        self.num_mushrooms = 1000
+        self.num_bushes = 1000
 
         self.generate_trees(self.num_trees)
+        self.generate_stones(self.num_stones)
+        self.generate_mushrooms(self.num_mushrooms)
+        self.generate_bushes(self.num_bushes)
 
         self.background_color = (39, 110, 58)
 
@@ -47,7 +56,16 @@ class GameScene:
         self.spawn_interval = 1000 # 1 segundo
         self.last_spawn_time = pygame.time.get_ticks()
 
-        self.music = "assets/sounds/game/The_Icy_Cave .wav"
+        self.is_paused = False
+
+        # busca todas as músicas disponíveis
+        musics = os.listdir("assets/sounds/game")
+
+        for music in musics:
+            if music.endswith(".wav"):
+                self.music = f"assets/sounds/game/{music}"
+
+        # inicia a música
         pygame.mixer.init()
         pygame.mixer.music.load(self.music)
         pygame.mixer.music.set_volume(0.05)
@@ -66,6 +84,46 @@ class GameScene:
             tree_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             tree = Tree(tree_x, tree_y, self.TILE_SIZE)
             self.camera.add(tree)  # Adiciona as árvores à câmera
+
+    def generate_stones(self, num_stones):
+        stone_images = [
+            pygame.image.load("assets/images/map/stone/stone_01.png").convert_alpha(),
+            pygame.image.load("assets/images/map/stone/stone_02.png").convert_alpha(),
+            pygame.image.load("assets/images/map/stone/stone_03.png").convert_alpha(),
+        ]
+
+        for _ in range(num_stones):
+            stone_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+            stone_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            stone = Stone(stone_x, stone_y, self.TILE_SIZE, stone_images)
+            self.camera.add(stone)
+
+    def generate_mushrooms(self, num_mushrooms):
+        mushroom_images = [
+            pygame.image.load("assets/images/map/mushroom/mushroom_01.png").convert_alpha(),
+            pygame.image.load("assets/images/map/mushroom/mushroom_02.png").convert_alpha(),
+            pygame.image.load("assets/images/map/mushroom/mushroom_03.png").convert_alpha(),
+        ]
+
+        for _ in range(num_mushrooms):
+            mushroom_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+            mushroom_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            mushroom = Mushroom(mushroom_x, mushroom_y, self.TILE_SIZE, mushroom_images)
+            self.camera.add(mushroom)
+
+    def generate_bushes(self, num_bushes):
+        # Carrega as imagens dos bushes (carregar uma vez para evitar repetição)
+        bush_images = [
+            pygame.image.load("assets/images/map/bush/bush_01.png").convert_alpha(),
+            pygame.image.load("assets/images/map/bush/bush_02.png").convert_alpha(),
+            pygame.image.load("assets/images/map/bush/bush_03.png").convert_alpha(),
+        ]
+
+        for _ in range(num_bushes):
+            bush_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+            bush_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            bush = Bush(bush_x, bush_y, self.TILE_SIZE, bush_images)
+            self.camera.add(bush)
 
     def spawn_enemy(self, enemy_class):
         """Função para spawnar inimigos fora da área visível, mas perto do personagem."""
@@ -95,6 +153,15 @@ class GameScene:
         grass_tile = pygame.image.load("assets/images/map/ground/grass_tile.png").convert_alpha()
         return {0: grass_tile}
 
+    def pause_game(self):
+        self.is_paused = not self.is_paused
+        if self.is_paused:
+            pygame.mixer.music.pause()
+            self.cursor.show()
+        else:
+            pygame.mixer.music.unpause()
+            self.cursor.hide()
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -102,13 +169,11 @@ class GameScene:
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    quit()
+                    # pause the game
+                    self.pause_game()
                 if event.key == pygame.K_LCTRL:
                     self.cursor.show()
                 ### apenas para teste
-                #if event.key == pygame.K_LSHIFT:
-                #    self.character.take_damage(10)
                 if event.key == pygame.K_CAPSLOCK:
                     self.character.gain_xp(100)
                 ###
@@ -165,12 +230,6 @@ class GameScene:
             if self.character.rect.colliderect(enemy.rect):
                 self.character.take_damage(enemy.attack)
 
-            # Usar retângulos reduzidos para evitar colisões falsas
-            reduced_character_rect = self.character.rect.inflate(-20, -20)  # Reduz tamanho do rect
-            reduced_enemy_rect = enemy.rect.inflate(-10, -10)
-            if reduced_character_rect.colliderect(reduced_enemy_rect):
-                self.character.take_damage(enemy.attack)
-
     def render(self):
         self.SCREEN.fill(self.background_color)
 
@@ -189,19 +248,34 @@ class GameScene:
 
         self.SCREEN.blit(self.character.xp_bar.image, (10, 10))
         level_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30).render(f"Level: {self.character.current_level}", True, (255, 255, 255))
+        xp_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 15).render(f"XP: {self.character.xp_bar.current_xp}/{self.character.xp_bar.max_xp}", True, (255, 255, 255))
         self.SCREEN.blit(level_label, (10, 30))
+        self.SCREEN.blit(xp_label, (self.SCREEN_WIDTH - 73, 25))
 
         # Desenha o cursor se ele tiver uma imagem
         if self.cursor.image:
             self.cursor.draw(self.SCREEN)
 
-        # show lines of the character collider
-        pygame.draw.rect(self.SCREEN, (0, 0, 255), self.character.rect, 2)
-        print(self.character.rect)
+        # Desenha o rect do personagem ajustado pela câmera
+        pygame.draw.rect(
+            self.SCREEN,(0, 0, 255),
+            pygame.Rect(
+                self.character.rect.x - self.camera.offset.x,
+                self.character.rect.y - self.camera.offset.y,
+                self.character.rect.width,
+                self.character.rect.height,
+                ),
+        2,
+        )
 
-        # show lines of enemy the collider
+        # Desenha o rect dos inimigos ajustado pela câmera
         for enemy in self.enemies:
-            pygame.draw.rect(self.SCREEN, (255, 0, 0), enemy.rect, 2)
+            pygame.draw.rect(self.SCREEN,(255, 0, 0),
+                             pygame.Rect(
+                                 enemy.rect.x - self.camera.offset.x,
+                                 enemy.rect.y - self.camera.offset.y,
+                                 enemy.rect.width, enemy.rect.height),
+                             2)
 
         pygame.display.update()
 
@@ -209,4 +283,3 @@ class GameScene:
         self.handle_events()
         self.update()
         self.render()
-

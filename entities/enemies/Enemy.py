@@ -1,14 +1,15 @@
 import pygame
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, name, health, attack, defense, speed, size):
+    def __init__(self, name, health, attack, defense, speed, width, height):
         super().__init__()
         self.name = name
         self.health = health
         self.attack = attack
         self.defense = defense
         self.speed = speed
-        self.size = size
+        self.width = width
+        self.height = height
 
         self.image = None
         self.rect = None
@@ -62,4 +63,3 @@ class Enemy(pygame.sprite.Sprite):
                         # Ajuste para manter o inimigo na área jogável
                         self.rect.x += separacao.x * distancia_segura
                         self.rect.y += separacao.y * distancia_segura
-

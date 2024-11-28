@@ -8,19 +8,14 @@ class Tree(pygame.sprite.Sprite):
         self.y = y
         self.tile_size = tile_size
 
-        self.animation_speed = random.uniform(0.1, 0.2)
+        self.animation_speed = random.uniform(0.07, 0.09)
         self.current_frame = 0
+        self.frame_counter = 0
 
-
-        self.idle_animation = [pygame.image.load("assets/images/map/tree/00.png").convert_alpha(),
-                               pygame.image.load("assets/images/map/tree/01.png").convert_alpha(),
-                               pygame.image.load("assets/images/map/tree/02.png").convert_alpha(),
-                               pygame.image.load("assets/images/map/tree/03.png").convert_alpha()]
+        self.idle_animation = [pygame.image.load(f"assets/images/map/tree/0{i}.png").convert_alpha() for i in range(1, 4)]
 
         self.image = self.idle_animation[self.current_frame]
         self.rect = self.image.get_rect(midbottom=(x, y))
-
-        self.frame_counter = 0
 
     def update(self, *args):
         self.animate_idle()

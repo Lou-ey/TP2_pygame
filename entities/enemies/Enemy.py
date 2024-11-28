@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = None
         self.rect = None
 
-        self.collider = pygame.Rect(0, 0, self.size[0], self.size[1])
+        #self.collider = pygame.Rect(0, 0, self.size[0], self.size[1])
 
         self.original_image = self.image
         self.is_facing_right = True

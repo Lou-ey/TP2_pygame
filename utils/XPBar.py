@@ -7,7 +7,7 @@ class XPBar(pygame.sprite.Sprite):
         self.current_xp = current_xp
         self.width = width
         self.height = 10
-        self.color = (0, 50, 255)
+        self.color = (0, 180, 255)
         self.bg_color = (50, 50, 50)
 
         # Cria a superfície da barra de xp

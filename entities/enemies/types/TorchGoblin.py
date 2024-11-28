@@ -6,7 +6,7 @@ class TorchGoblin(Enemy, pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # Inicializa com atributos específicos do Goblin
-        super().__init__(name="Goblin", health=50, attack=10, defense=5, speed=1, size=(60, 60))
+        super().__init__(name="Goblin", health=50, attack=0.5, defense=5, speed=1, size=(60, 60))
         self.x = x
         self.y = y
 
@@ -15,7 +15,7 @@ class TorchGoblin(Enemy, pygame.sprite.Sprite):
         #self.die_animation = [pygame.image.load(f"assets/images/enemies/torch_goblin/die/0{i}.png").convert_alpha() for i in range(1, 7)]
 
         self.image = self.walk_animation[0]
-        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
         self.idle_animation_speed = 0.2
         self.walk_animation_speed = 0.1

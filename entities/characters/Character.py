@@ -30,7 +30,7 @@ class Character(pygame.sprite.Sprite):
 
         # Ajuste das imagens e criação do retângulo de colisão
         self.image = self.idle_animation[0]
-        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
         self.health_bar = LifeBar(self.max_health, self.current_health, self.health_bar_width)
         self.xp_bar = XPBar(self.max_xp, self.current_xp, self.xp_bar_width)

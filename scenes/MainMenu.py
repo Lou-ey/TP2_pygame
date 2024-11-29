@@ -1,22 +1,28 @@
 import pygame
 import os
-from skimage import filters
-
-from skimage.transform import rescale
 from utils.Cursor import Cursor
 
+from utils.AudioPlayer import AudioPlayer
 
 class MainMenu:
     def __init__(self):
-        self.volume = 0.5
-        pygame.mixer.music.set_volume(self.volume)
+        self.volume = 0.03
+        self.audio = AudioPlayer()
+        self.musica = self.audio.menu_music()
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(self.musica)
+            pygame.mixer.music.set_volume(self.volume)
+            pygame.mixer.music.play(-1)
+
         pygame.mouse.set_visible(False)
         pygame.display.set_caption("Vampire Diaries")
+        display_info = pygame.display.Info()
         #Adaptar largura e altura ao tamanho das telas
-        self.width = pygame.display.Info().current_w
-        self.height = pygame.display.Info().current_h
+        #self.width = pygame.display.Info().current_w
+        #self.height = pygame.display.Info().current_h
+        self.width = 800
+        self.height = 600
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.clock = pygame.time.Clock()
         self.options = ["Play", "Options", "Quit"]
         self.selected_option = 0
         self.running = True
@@ -27,7 +33,8 @@ class MainMenu:
         self.MAP_HEIGHT = 2
         # teste
 
-        #self.boneco1 = pygame.image.load("../assets/images/player/player_idle/00.png").convert_alpha()
+        self.boneco1 = self.load_and_scale_image('assets/images/player/knight/idle/00.png', (120, 120))
+        self.boneco2 = self.load_and_scale_image('assets/images/player/knight/attack/00.png', (120, 120))
 
         self.foam_animation = [pygame.image.load("assets/images/map/water/00.png").convert_alpha(),
                                pygame.image.load("assets/images/map/water/01.png").convert_alpha(),
@@ -47,24 +54,25 @@ class MainMenu:
         self.background_image = self.load_and_scale_image('assets/images/menu/Background.png',(self.width, self.height))
         self.smooth_background = self.load_and_scale_image('assets/images/menu/Background_blur.png',(self.width, self.height))
         self.banner_menu = self.load_and_scale_image('assets/images/menu/Banner_Vertical.png', (350, 450))
-        self.banner_menu_options = self.load_and_scale_image('assets/images/menu/Banner_Vertical.png', (800, 1000))
+        self.banner_menu_options = self.load_and_scale_image('assets/images/menu/Banner_Vertical.png', (550, 700))
         self.banner_image = self.load_and_scale_image('assets/images/menu/Ribbon_Red_3Slides.png', (350, 80))
         self.button_image = self.load_and_scale_image('assets/images/menu/Button_Red_3Slides.png', (150, 50))
-
-
+        self.back_button = self.load_and_scale_image('assets/images/UI/menuUI/voltar.png', (70, 70))
+        self.back_button_rect = self.back_button.get_rect(center=(self.width // 2 - self.banner_menu_options.get_width() * 0.15,self.height // 2 - self.banner_menu_options.get_height() * 0.18))
+        self.back_button_pressed = self.load_and_scale_image('assets/images/UI/menuUI/voltar_pressed.png', (70, 70))
+        self.with_sound = self.load_and_scale_image('assets/images/UI/menuUI/with_Sound.png', (70, 70))
+        self.with_sound_rect = self.with_sound.get_rect(center=(self.width // 2 , self.height * 0.45))
+        self.sound_muted = self.load_and_scale_image('assets/images/UI/menuUI/Sound_mute.png', (70, 70))
+        self.muted = False
+        self.fullscreen_off = self.load_and_scale_image('assets/images/UI/menuUI/Fullscreen_off.png', (70, 70))
+        self.fullscreen_off_rect = self.fullscreen_off.get_rect(center=(self.width // 2, self.height * 0.65))
+        self.fullscreen_on = self.load_and_scale_image('assets/images/UI/menuUI/Fullscreen_on.png', (70, 70))
+        self.fullscreened = False
         # Custom cursor instance
         self.cursor = Cursor('assets/images/UI/pointer/01.png', self.CURSOR_SIZE)
         # Track mouse position dynamically
-        self.mouse_position = (0, 0)  # Initial position
-        self.checkbox_rect = pygame.Rect(self.width // 2 - 20, self.height * 0.60, 40, 40)
-        self.checkbox_checked = False
+        self.mouse_position = (0, 0)
 
-    def draw_checkbox(self):
-        if self.checkbox_checked:
-            pygame.draw.rect(self.screen, (0,0,0), self.checkbox_rect)  # Preenche a caixa com a cor
-        else:
-            pygame.draw.rect(self.screen, (255,255,255), self.checkbox_rect)  # Desenha a caixa sem preencher
-        pygame.draw.rect(self.screen, (0,0,0), self.checkbox_rect, 2)  # Desenha a borda da caixa de seleção
 
     def load_and_scale_image(self, path, size):
         image = pygame.image.load(path)
@@ -85,10 +93,6 @@ class MainMenu:
         text_rect = text_surface.get_rect(center=(x, y))
         self.screen.blit(text_surface, text_rect)
 
-    def draw_slider(self, x, y, width, height, value):
-        pygame.draw.rect(self.screen, (255, 255, 255), (x, y, width, height))  # Fundo da barra
-        pygame.draw.rect(self.screen, (0, 0, 0), (x, y, value * width, height))  # Barra preenchida
-        pygame.draw.circle(self.screen, (0, 0, 0), (x + int(value * width), y + height // 2), 10)
 
     def menuPrincipal(self):
         self.screen.blit(self.background_image, (0, 0))
@@ -134,9 +138,10 @@ class MainMenu:
         sand_x = (self.width - self.sand_image.get_width()) // 2 - int(self.width * 0.1)
         sand_y = (self.height - self.sand_image.get_height()) // 2 - int(self.height * 0.4)
         self.screen.blit(self.sand_image, (sand_x, sand_y))
-        '''boneco_x = (self.width - self.boneco1.get_width()) // 2 - int(self.width * 0.1)
+        boneco_x = (self.width - self.boneco1.get_width()) // 2 - int(self.width * 0.1)
         boneco_y = (self.height - self.boneco1.get_height()) // 2 - int(self.height * 0.4)
-        self.screen.blit(self.boneco1, (boneco_x, boneco_y))'''
+        self.screen.blit(self.boneco1, (boneco_x, boneco_y))
+
 
         foam_x = (self.width - self.foam_image.get_width()) // 2 + int(self.width * 0.1)
         foam_y = (self.height - self.foam_image.get_height()) // 2 + int(self.height * 0.4)
@@ -145,19 +150,41 @@ class MainMenu:
         sand_x = (self.width - self.sand_image.get_width()) // 2 + int(self.width * 0.1)
         sand_y = (self.height - self.sand_image.get_height()) // 2 + int(self.height * 0.4)
         self.screen.blit(self.sand_image, (sand_x, sand_y))
+
+        boneco_2_x = (self.width - self.boneco2.get_width()) // 2 + int(self.width * 0.1)
+        boneco_2_y = (self.height - self.boneco2.get_height()) // 2 + int(self.height * 0.4)
+        self.screen.blit(self.boneco2, (boneco_2_x, boneco_2_y))
+
         self.cursor.draw(self.screen)
         pygame.display.flip()
 
     def options_menu(self):
-        slider_width = 300
         self.screen.blit(self.smooth_background, (0, 0))
+
         banner_x = (self.width - self.banner_menu_options.get_width()) // 2
         banner_y = (self.height - self.banner_menu_options.get_height()) // 2
         self.screen.blit(self.banner_menu_options, (banner_x, banner_y))
-        self.draw_text("Options Menu", (0, 0, 0), self.width // 2, self.height * 0.2, 60)
-        self.draw_text("Sound", (0, 0, 0), self.width // 2, self.height * 0.35, 50)
-        self.draw_slider(self.width // 2 - slider_width // 2, self.height * 0.4, slider_width, 20, self.volume)
-        self.draw_text("FullScreen", (0, 0, 0), self.width // 2, self.height * 0.55, 50)
-        self.draw_checkbox()
+        self.draw_text("Options Menu", (0, 0, 0), self.width // 2, self.height * 0.20, 40)
+
+        mouse_position = pygame.mouse.get_pos()
+        if self.back_button_rect.collidepoint(mouse_position):
+            self.screen.blit(self.back_button_pressed, self.back_button_rect.topleft)
+        else:
+            self.screen.blit(self.back_button, self.back_button_rect.topleft)
+
+
+        self.draw_text("Sound", (0, 0, 0), self.width // 2, self.height * 0.35, 30)
+        if self.muted:
+            self.screen.blit(self.sound_muted, self.with_sound_rect.topleft)
+        else:
+            self.screen.blit(self.with_sound, self.with_sound_rect.topleft)
+
+        self.draw_text("FullScreen", (0, 0, 0), self.width // 2, self.height * 0.55, 30)
+
+        if self.fullscreened:
+            self.screen.blit(self.fullscreen_on, self.fullscreen_off_rect.topleft)
+        else:
+            self.screen.blit(self.fullscreen_off, self.fullscreen_off_rect.topleft)
+
         self.cursor.draw(self.screen)
         pygame.display.flip()

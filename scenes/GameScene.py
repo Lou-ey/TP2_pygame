@@ -141,14 +141,7 @@ class GameScene:
         grass_tile = pygame.image.load("assets/images/map/ground/grass_tile.png").convert_alpha()
         return {0: grass_tile}
 
-    def pause_game(self):
-        self.is_paused = not self.is_paused
-        if self.is_paused:
-            self.audio_player.pause_music()
-            self.cursor.show()
-        else:
-            self.audio_player.unpause_music()
-            self.cursor.hide()
+    #def pause_game(self):
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -199,6 +192,7 @@ class GameScene:
         self.camera.update(keys)
         self.cursor.update()
         self.character.die()
+
 
         self.audio_player.load_music()
         self.audio_player.play_music()

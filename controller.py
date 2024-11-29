@@ -1,13 +1,12 @@
 import pygame
 from pygame.time import Clock
-from scenes.GameScene import GameScene
-
+from MainMenuController import MainMenuController
 pygame.init()
 
 def main():
-    game_scene = GameScene() # Instancia a cena do jogo
+    menu_controller = MainMenuController()
     while True:
-        game_scene.run() # Roda o jogo
+        menu_controller.run()
         pygame.display.update() # Atualiza a tela
         Clock().tick(60)
 

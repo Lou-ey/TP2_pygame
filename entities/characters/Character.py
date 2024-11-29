@@ -86,16 +86,12 @@ class Character(pygame.sprite.Sprite):
             if keys[pygame.K_w]:
                 self.rect.y -= self.speed
                 self.is_moving = True
-                # velocidade de deslocamento
-                print(f'Deslocamento cima {self.rect.y - self.speed}')
             if keys[pygame.K_s]:
                 self.rect.y += self.speed
                 self.is_moving = True
-                print(f'Deslocamento baixo {self.rect.y + self.speed}')
             if keys[pygame.K_a]:
                 self.rect.x -= self.speed
                 self.is_moving = True
-                print(f'Deslocamento esquerda {self.rect.x - self.speed}')
                 if not self.facing_left:
                     self.facing_left = True
                     self.facing_right = False
@@ -103,8 +99,6 @@ class Character(pygame.sprite.Sprite):
             if keys[pygame.K_d]:
                 self.rect.x += self.speed
                 self.is_moving = True
-                # velocidade de deslocamento
-                print(f'Deslocamento direita {self.rect.x + self.speed}')
                 if self.facing_left:
                     self.facing_left = False
                     self.facing_right = True

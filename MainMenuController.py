@@ -3,6 +3,7 @@ from scenes.MainMenu import MainMenu
 import pygame
 from scenes.GameScene import GameScene
 from utils.AudioPlayer import AudioPlayer
+from utils.State import State
 
 
 class MainMenuController:
@@ -10,28 +11,18 @@ class MainMenuController:
         pygame.init()
         self.audio_gestor = AudioPlayer()
         self.menu = MainMenu()
-        self.game = GameScene()
         self.running = True
         self.show_options = False
+        self.current_state = State.MENU
         self.to_play = False
+        self.game = None
 
 
-    def handle_events(self):
+    def handle_events_menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN:
-                    self.menu.selected_option = (self.menu.selected_option + 1) % len(self.menu.options)
-                elif event.key == pygame.K_UP:
-                    self.menu.selected_option = (self.menu.selected_option - 1) % len(self.menu.options)
-                elif event.key == pygame.K_RETURN:
-                    selected_option = self.menu.options[self.menu.selected_option]
-                    if selected_option == "Quit":
-                        self.running = False
-                    elif selected_option == "Options":
-                        self.menu.show_options = True
-
+                pygame.quit()
+                quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if self.menu.fullscreen_off_rect.collidepoint(self.menu.mouse_position):
@@ -54,24 +45,28 @@ class MainMenuController:
 
                     if self.menu.back_button_rect.collidepoint(self.menu.mouse_position):
                         self.show_options = False
-
                     for i, rect in enumerate(self.menu.button_rects):
                         if rect.collidepoint(self.menu.mouse_position):
                             selected_option = self.menu.options[i]
                             if selected_option == "Play" and self.show_options == False:
-                                self.to_play = True
-                            elif selected_option == "Quit":
+                                self.current_state = State.GAME
+                                self.game = GameScene()
+                            elif selected_option == "Quit" and self.show_options == False:
+                                pygame.quit()
                                 quit()
-                            elif selected_option == "Options":
+                            elif selected_option == "Options" and self.show_options == False:
                                 self.show_options = True
+
 
     def run(self):
         self.menu.mouse_position = pygame.mouse.get_pos()
-        self.handle_events()
-        self.menu.cursor.update()
-        if self.show_options:
-            self.menu.options_menu()
-        elif self.to_play:
+        if self.current_state == State.MENU:
+            self.menu.cursor.update()
+            self.handle_events_menu()
+            if self.show_options:
+                self.menu.options_menu()
+            else:
+                self.menu.menuPrincipal()
+
+        elif self.current_state == State.GAME:
             self.game.run()
-        else:
-            self.menu.menuPrincipal()

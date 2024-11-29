@@ -17,7 +17,7 @@ class GameScene:
         self.SCREEN_WIDTH = 800 #pygame.display.Info().current_w
         self.SCREEN_HEIGHT = 600 #pygame.display.Info().current_h
         self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        pygame.display.set_caption("Game Scene")
+        pygame.display.set_caption("Vampire Diaries")
 
         self.TILE_SIZE = 64
         self.MAP_WIDTH = 500
@@ -62,7 +62,7 @@ class GameScene:
         self.audio_player = AudioPlayer()
 
         self.menu_manager = MainMenu()
-        self.game_paused = False
+        self.is_paused = False
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -144,31 +144,36 @@ class GameScene:
         return {0: grass_tile}
 
     def draw_pause(self):
-        overlay = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        overlay.set_alpha(128)  # Define a transparência (0 a 255)
-        overlay.fill((0, 0, 0))  # Fundo preto
-        self.SCREEN.blit(overlay, (0, 0))  # Desenha o fundo semi-transparente
+        # Cria uma superfície de sobreposição com transparência
+        overlay = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))  # Preenche com preto e um nível de transparência (alpha = 180)
 
-    def pause_game(self):
-        self.game_paused = not self.game_paused
-        if self.game_paused:
-            self.draw_pause()
+        # Desenha a sobreposição no fundo
+        self.SCREEN.blit(overlay, (0, 0))
 
-
-
+        # Carrega as fontes para o título e opções
         title_font = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 50)
         option_font = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30)
+
+        # Cria o texto
         title_text = title_font.render("Paused", True, (255, 255, 255))
         resume_text = option_font.render("Resume", True, (255, 255, 255))
         main_menu_text = option_font.render("Main Menu", True, (255, 255, 255))
 
+        # Define a posição dos textos
         title_pos = title_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 3))
         resume_pos = resume_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2))
         main_menu_pos = main_menu_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 50))
 
+        # Desenha os textos na tela
         self.SCREEN.blit(title_text, title_pos)
         self.SCREEN.blit(resume_text, resume_pos)
         self.SCREEN.blit(main_menu_text, main_menu_pos)
+
+    def pause_game(self):
+            self.is_paused = not self.is_paused
+            if self.is_paused:
+                self.draw_pause()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -243,7 +248,13 @@ class GameScene:
                 self.character.take_damage(enemy.attack)
 
     def render(self):
-        self.SCREEN.fill(self.background_color)
+        #self.SCREEN.fill(self.background_color)
+
+        if self.is_paused:
+            self.draw_pause()
+            pygame.display.update()
+            return
+
 
         character_x, character_y = self.character.rect.center
         self.culling(character_x, character_y)
@@ -313,5 +324,7 @@ class GameScene:
 
     def run(self):
         self.handle_events()
-        self.update()
+
+        if not self.is_paused:
+            self.update()
         self.render()

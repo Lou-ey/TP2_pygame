@@ -1,10 +1,8 @@
-from pygame import NOFRAME
 from scenes.MainMenu import MainMenu
 import pygame
 from scenes.GameScene import GameScene
 from utils.AudioPlayer import AudioPlayer
 from utils.State import State
-
 
 class MainMenuController:
     def __init__(self):
@@ -16,7 +14,6 @@ class MainMenuController:
         self.current_state = State.MENU
         self.to_play = False
         self.game = None
-
 
     def handle_events_menu(self):
         for event in pygame.event.get():
@@ -56,7 +53,6 @@ class MainMenuController:
                                 quit()
                             elif selected_option == "Options" and self.show_options == False:
                                 self.show_options = True
-
 
     def run(self):
         self.menu.mouse_position = pygame.mouse.get_pos()

@@ -40,6 +40,12 @@ class Character(pygame.sprite.Sprite):
         self.collision_rect = pygame.Rect(0, 0, collision_width, collision_height)
         self.collision_rect.center = self.rect.center
 
+        self.attack_rect_width = int(self.rect.width * 0.3)  # Largura do attack_rect (150% do personagem)
+        self.attack_rect_height = int(self.rect.height * 0.4)  # Altura do attack_rect (60% do personagem)
+
+        self.attack_rect = pygame.Rect(0, 0, self.attack_rect_width, self.attack_rect_height)
+        self.attack_rect.center = self.rect.center
+
         self.health_bar = LifeBar(self.max_health, self.current_health, self.health_bar_width)
         self.xp_bar = XPBar(self.max_xp, self.current_xp, self.xp_bar_width)
 
@@ -70,6 +76,11 @@ class Character(pygame.sprite.Sprite):
 
     def update(self, keys):
         self.is_moving = False
+
+        if self.facing_right:
+            self.attack_rect.midleft = self.rect.midright
+        elif self.facing_left:
+            self.attack_rect.midright = self.rect.midleft
 
         # Inicia o ataque com o espaço
         if keys[pygame.K_SPACE] and not self.is_attacking:
@@ -162,16 +173,9 @@ class Character(pygame.sprite.Sprite):
             self.image = self.die_animation[-1] # Mantém a última imagem
 
     def attack(self, enemy):
-        """Ataque do personagem."""
-        # cria um collider para o ataque
-        attack_collider = pygame.Rect(self.rect.x, self.rect.y, self.width, self.height)
-        attack_collider.width = 100
-        attack_collider.height = 100
-        if attack_collider.colliderect(enemy.collision_rect):
-            enemy.health -= self.attack - enemy.defense
-            if enemy.health <= 0:
-                enemy.kill()
-                self.gain_xp(enemy.xp)
+        if self.is_attacking:
+            if self.attack_rect.colliderect(enemy.collision_rect):
+                enemy.take_damage(self.attack)
 
     def die(self):
         if self.current_health == 0:

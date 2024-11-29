@@ -47,7 +47,6 @@ class AudioPlayer:
         self.volume =  volume
         pygame.mixer.music.set_volume(self.volume)
 
-
     def mute_music(self):
         if not self.is_muted:
             self.set_volume(0)
@@ -58,3 +57,17 @@ class AudioPlayer:
             self.set_volume(0.03)
             self.is_muted = False
 
+    def pause_music(self):
+        if self.music_playing:
+            pygame.mixer.music.pause()
+            self.music_playing = False
+
+    def unpause_music(self):
+        if not self.music_playing:
+            pygame.mixer.music.unpause()
+            self.music_playing = True
+
+    def stop_music(self):
+        if self.music_playing:
+            pygame.mixer.music.stop()
+            self.music_playing = False

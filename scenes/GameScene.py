@@ -10,6 +10,7 @@ from entities.objects.Bush import Bush
 from utils.CameraGroup import CameraGroup
 from utils.AudioPlayer import AudioPlayer
 from utils.Cursor import Cursor
+from scenes.MainMenu import MainMenu
 
 class GameScene:
     def __init__(self):
@@ -57,10 +58,11 @@ class GameScene:
         self.spawn_interval = 1000 # 1 segundo
         self.last_spawn_time = pygame.time.get_ticks()
 
-        self.is_paused = False
-
         # Instancia do AudioPlayer
         self.audio_player = AudioPlayer()
+
+        self.menu_manager = MainMenu()
+        self.game_paused = False
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -141,7 +143,32 @@ class GameScene:
         grass_tile = pygame.image.load("assets/images/map/ground/grass_tile.png").convert_alpha()
         return {0: grass_tile}
 
-    #def pause_game(self):
+    def draw_pause(self):
+        overlay = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        overlay.set_alpha(128)  # Define a transparência (0 a 255)
+        overlay.fill((0, 0, 0))  # Fundo preto
+        self.SCREEN.blit(overlay, (0, 0))  # Desenha o fundo semi-transparente
+
+    def pause_game(self):
+        self.game_paused = not self.game_paused
+        if self.game_paused:
+            self.draw_pause()
+
+
+
+        title_font = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 50)
+        option_font = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30)
+        title_text = title_font.render("Paused", True, (255, 255, 255))
+        resume_text = option_font.render("Resume", True, (255, 255, 255))
+        main_menu_text = option_font.render("Main Menu", True, (255, 255, 255))
+
+        title_pos = title_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 3))
+        resume_pos = resume_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2))
+        main_menu_pos = main_menu_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 50))
+
+        self.SCREEN.blit(title_text, title_pos)
+        self.SCREEN.blit(resume_text, resume_pos)
+        self.SCREEN.blit(main_menu_text, main_menu_pos)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -150,8 +177,8 @@ class GameScene:
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    # pause the game
                     self.pause_game()
+
                 if event.key == pygame.K_LCTRL:
                     self.cursor.show()
                 ### apenas para teste
@@ -228,12 +255,14 @@ class GameScene:
         health_bar_offset_y = 5  # Distância acima do personagem
         # Posição da barra de vida
         health_bar_position = (self.character.rect.x + 35 - self.camera.offset.x,
-                            self.character.rect.y - self.camera.offset.y - health_bar_offset_y) # Centraliza a barra de vida
+                               self.character.rect.y - self.camera.offset.y - health_bar_offset_y)  # Centraliza a barra de vida
         self.SCREEN.blit(self.character.health_bar.image, health_bar_position)
 
         self.SCREEN.blit(self.character.xp_bar.image, (10, 10))
-        level_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30).render(f"Level: {self.character.current_level}", True, (255, 255, 255))
-        xp_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 15).render(f"XP: {self.character.xp_bar.current_xp}/{self.character.xp_bar.max_xp}", True, (255, 255, 255))
+        level_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30).render(
+            f"Level: {self.character.current_level}", True, (255, 255, 255))
+        xp_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 15).render(
+            f"XP: {self.character.xp_bar.current_xp}/{self.character.xp_bar.max_xp}", True, (255, 255, 255))
         self.SCREEN.blit(level_label, (10, 30))
         self.SCREEN.blit(xp_label, (self.SCREEN_WIDTH - 73, 25))
 
@@ -253,7 +282,7 @@ class GameScene:
             2
         )
 
-        #pygame.draw.rect(
+        # pygame.draw.rect(
         #    self.SCREEN, (0, 0, 255), # Azul
         #    pygame.Rect(
         #        self.character.rect.x - self.camera.offset.x,
@@ -264,7 +293,7 @@ class GameScene:
         # Desenha o rect dos inimigos ajustado pela câmera
         for enemy in self.enemies:
             pygame.draw.rect(
-                self.SCREEN,(255, 0, 0),
+                self.SCREEN, (255, 0, 0),
                 pygame.Rect(
                     enemy.collision_rect.x - self.camera.offset.x,
                     enemy.collision_rect.y - self.camera.offset.y,
@@ -272,7 +301,7 @@ class GameScene:
                     enemy.collision_rect.height),
                 2)
 
-            #pygame.draw.rect(
+            # pygame.draw.rect(
             #    self.SCREEN, (0, 255, 0),
             #    pygame.Rect(
             #        enemy.rect.x - self.camera.offset.x,

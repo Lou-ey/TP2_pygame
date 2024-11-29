@@ -188,3 +188,5 @@ class MainMenu:
 
         self.cursor.draw(self.screen)
         pygame.display.flip()
+
+

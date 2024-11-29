@@ -8,6 +8,7 @@ from entities.objects.Stone import Stone
 from entities.objects.Mushroom import Mushroom
 from entities.objects.Bush import Bush
 from utils.CameraGroup import CameraGroup
+from utils.AudioPlayer import AudioPlayer
 from utils.Cursor import Cursor
 
 class GameScene:
@@ -32,7 +33,7 @@ class GameScene:
         self.cursor.hide()  # Esconde o cursor
 
         # Instancia do personagem
-        self.character = Character("Player", 100, 1000, 10, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
+        self.character = Character("Player", 100, 10, 10, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
         self.camera.add(self.character) # Adiciona o personagem à camera
 
         # Instancia dos inimigos
@@ -58,21 +59,8 @@ class GameScene:
 
         self.is_paused = False
 
-        # busca todas as músicas disponíveis
-        musics = os.listdir("assets/sounds/game")
-
-        for music in musics:
-            if music.endswith(".wav"):
-                self.music = f"assets/sounds/game/{music}"
-
-        # inicia a música
-        pygame.mixer.init()
-        pygame.mixer.music.load(self.music)
-        pygame.mixer.music.set_volume(0.05)
-        pygame.mixer.music.play(-1)
-
-    def stop_music(self):
-        pygame.mixer.music.stop()
+        # Instancia do AudioPlayer
+        self.audio_player = AudioPlayer()
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -156,10 +144,10 @@ class GameScene:
     def pause_game(self):
         self.is_paused = not self.is_paused
         if self.is_paused:
-            pygame.mixer.music.pause()
+            self.audio_player.pause_music()
             self.cursor.show()
         else:
-            pygame.mixer.music.unpause()
+            self.audio_player.unpause_music()
             self.cursor.hide()
 
     def handle_events(self):
@@ -175,7 +163,7 @@ class GameScene:
                     self.cursor.show()
                 ### apenas para teste
                 if event.key == pygame.K_CAPSLOCK:
-                    self.character.gain_xp(100)
+                    self.character.gain_xp(5)
                 ###
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LCTRL:
@@ -212,6 +200,9 @@ class GameScene:
         self.cursor.update()
         self.character.die()
 
+        self.audio_player.load_music()
+        self.audio_player.play_music()
+
         # Controla o tempo para spawnar novos inimigos
         current_time = pygame.time.get_ticks() # tick atual
         num_current_enemies = len(self.enemies) # Número de inimigos atualmente na tela
@@ -224,10 +215,10 @@ class GameScene:
 
         player_position = self.character.rect.center
         for enemy in self.enemies:
-            enemy.update(player_position)
+            enemy.update(player_position, self.enemies, self.character)
 
             # Verifica se o inimigo colidiu com o personagem
-            if self.character.rect.colliderect(enemy.rect):
+            if self.character.collision_rect.colliderect(enemy.collision_rect):
                 self.character.take_damage(enemy.attack)
 
     def render(self):
@@ -256,26 +247,44 @@ class GameScene:
         if self.cursor.image:
             self.cursor.draw(self.SCREEN)
 
-        # Desenha o rect do personagem ajustado pela câmera
         pygame.draw.rect(
-            self.SCREEN,(0, 0, 255),
+            self.SCREEN,
+            (255, 0, 0),  # Verde
             pygame.Rect(
-                self.character.rect.x - self.camera.offset.x,
-                self.character.rect.y - self.camera.offset.y,
-                self.character.rect.width,
-                self.character.rect.height,
-                ),
-        2,
+                self.character.collision_rect.x - self.camera.offset.x,
+                self.character.collision_rect.y - self.camera.offset.y,
+                self.character.collision_rect.width,
+                self.character.collision_rect.height
+            ),
+            2
         )
+
+        #pygame.draw.rect(
+        #    self.SCREEN, (0, 0, 255), # Azul
+        #    pygame.Rect(
+        #        self.character.rect.x - self.camera.offset.x,
+        #        self.character.rect.y - self.camera.offset.y,
+        #        self.character.rect.width, self.character.rect.height),
+        #    2)
 
         # Desenha o rect dos inimigos ajustado pela câmera
         for enemy in self.enemies:
-            pygame.draw.rect(self.SCREEN,(255, 0, 0),
-                             pygame.Rect(
-                                 enemy.rect.x - self.camera.offset.x,
-                                 enemy.rect.y - self.camera.offset.y,
-                                 enemy.rect.width, enemy.rect.height),
-                             2)
+            pygame.draw.rect(
+                self.SCREEN,(255, 0, 0),
+                pygame.Rect(
+                    enemy.collision_rect.x - self.camera.offset.x,
+                    enemy.collision_rect.y - self.camera.offset.y,
+                    enemy.collision_rect.width,
+                    enemy.collision_rect.height),
+                2)
+
+            #pygame.draw.rect(
+            #    self.SCREEN, (0, 255, 0),
+            #    pygame.Rect(
+            #        enemy.rect.x - self.camera.offset.x,
+            #        enemy.rect.y - self.camera.offset.y,
+            #        enemy.rect.width, enemy.rect.height),
+            #    2)
 
         pygame.display.update()
 

@@ -1,7 +1,6 @@
 import pygame
 from utils.LifeBar import LifeBar
 from utils.XPBar import XPBar
-from entities.enemies.Enemy import Enemy
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, name, max_health, max_xp, attack, defense, speed, x, y, width, height):
@@ -30,8 +29,16 @@ class Character(pygame.sprite.Sprite):
         self.die_animation = [pygame.image.load(f"assets/images/player/knight/die/0{i}.png").convert_alpha() for i in range(1, 14)]
 
         # Ajuste das imagens e criação do retângulo de colisão
-        self.image = self.idle_animation[0]
-        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.image = pygame.transform.scale(self.idle_animation[0], (self.width, self.height))
+        self.rect = self.image.get_rect(center=(self.x, self.y))  # Retângulo principal da imagem
+
+        # Criar o collision_rect com offset proporcional
+        collision_width = int(self.rect.width * 0.2)  # 20% da largura do rect principal
+        collision_height = int(self.rect.height * 0.15)  # 10% da altura do rect principal
+
+        # Centraliza o collision_rect no rect principal
+        self.collision_rect = pygame.Rect(0, 0, collision_width, collision_height)
+        self.collision_rect.center = self.rect.center
 
         self.health_bar = LifeBar(self.max_health, self.current_health, self.health_bar_width)
         self.xp_bar = XPBar(self.max_xp, self.current_xp, self.xp_bar_width)
@@ -52,7 +59,7 @@ class Character(pygame.sprite.Sprite):
         self.idle_animation_speed = 0.1
         self.walk_animation_speed = 0.12
         self.attack_animation_speed = 0.25
-        self.die_animation_speed = 0.1
+        self.die_animation_speed = 0.09
         self.is_moving = False
         self.is_attacking = False
         self.is_dead = False
@@ -79,12 +86,16 @@ class Character(pygame.sprite.Sprite):
             if keys[pygame.K_w]:
                 self.rect.y -= self.speed
                 self.is_moving = True
+                # velocidade de deslocamento
+                print(f'Deslocamento cima {self.rect.y - self.speed}')
             if keys[pygame.K_s]:
                 self.rect.y += self.speed
                 self.is_moving = True
+                print(f'Deslocamento baixo {self.rect.y + self.speed}')
             if keys[pygame.K_a]:
                 self.rect.x -= self.speed
                 self.is_moving = True
+                print(f'Deslocamento esquerda {self.rect.x - self.speed}')
                 if not self.facing_left:
                     self.facing_left = True
                     self.facing_right = False
@@ -92,10 +103,14 @@ class Character(pygame.sprite.Sprite):
             if keys[pygame.K_d]:
                 self.rect.x += self.speed
                 self.is_moving = True
+                # velocidade de deslocamento
+                print(f'Deslocamento direita {self.rect.x + self.speed}')
                 if self.facing_left:
                     self.facing_left = False
                     self.facing_right = True
                     self.flip_animation()
+
+        self.collision_rect.center = self.rect.center
 
         # Escolhe a animação correta
         if self.is_attacking:
@@ -158,8 +173,7 @@ class Character(pygame.sprite.Sprite):
         attack_collider = pygame.Rect(self.rect.x, self.rect.y, self.width, self.height)
         attack_collider.width = 100
         attack_collider.height = 100
-        if attack_collider.colliderect(enemy.rect):
-
+        if attack_collider.colliderect(enemy.collision_rect):
             enemy.health -= self.attack - enemy.defense
             if enemy.health <= 0:
                 enemy.kill()

@@ -132,6 +132,7 @@ class Character(pygame.sprite.Sprite):
             self.animate_attack()
         elif self.is_moving:
             self.animate_walk()
+            self.audio_player.play_sound('player_walk', 0.2)
         else:
             self.animate_idle()
 
@@ -238,6 +239,7 @@ class Character(pygame.sprite.Sprite):
     def take_damage(self, damage):
         self.current_health = max(0, self.current_health - damage)
         self.health_bar.update(self.current_health)
+        self.audio_player.play_sound('player_hit', 0.2)
 
     def gain_xp(self, xp):
         self.xp_bar.current_xp += xp

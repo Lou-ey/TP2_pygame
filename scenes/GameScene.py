@@ -310,29 +310,29 @@ class GameScene:
             if self.cursor.image:
                 self.cursor.draw(self.SCREEN)
 
-            pygame.draw.rect(
-                self.SCREEN,
-                (255, 0, 0),  # Verde
-                pygame.Rect(
-                    self.character.collision_rect.x - self.camera.offset.x,
-                    self.character.collision_rect.y - self.camera.offset.y,
-                    self.character.collision_rect.width,
-                    self.character.collision_rect.height
-                ),
-                2
-            )
+            #pygame.draw.rect(
+            #    self.SCREEN,
+            #    (255, 0, 0),  # Verde
+            #    pygame.Rect(
+            #        self.character.collision_rect.x - self.camera.offset.x,
+            #        self.character.collision_rect.y - self.camera.offset.y,
+            #        self.character.collision_rect.width,
+            #        self.character.collision_rect.height
+            #    ),
+            #    2
+            #)
 
-            pygame.draw.rect(
-                self.SCREEN,
-                (0, 255, 0),  # Verde
-                pygame.Rect(
-                    self.character.attack_rect.x - self.camera.offset.x,
-                    self.character.attack_rect.y - self.camera.offset.y,
-                    self.character.attack_rect.width,
-                    self.character.attack_rect.height
-                ),
-                2
-            )
+            #pygame.draw.rect(
+            #    self.SCREEN,
+            #    (0, 255, 0),  # Verde
+            #    pygame.Rect(
+            #        self.character.attack_rect.x - self.camera.offset.x,
+            #        self.character.attack_rect.y - self.camera.offset.y,
+            #        self.character.attack_rect.width,
+            #        self.character.attack_rect.height
+            #    ),
+            #    2
+            #)
 
             #pygame.draw.rect(
             #    self.SCREEN, (0, 0, 255), # Azul
@@ -342,16 +342,15 @@ class GameScene:
             #        self.character.rect.width, self.character.rect.height),
             #    2)
 
-            # Desenha o rect dos inimigos ajustado pela câmera
-            for enemy in self.enemies:
-                pygame.draw.rect(
-                    self.SCREEN, (255, 0, 0),
-                    pygame.Rect(
-                        enemy.collision_rect.x - self.camera.offset.x,
-                        enemy.collision_rect.y - self.camera.offset.y,
-                        enemy.collision_rect.width,
-                        enemy.collision_rect.height),
-                    2)
+            #for enemy in self.enemies:
+            #    pygame.draw.rect(
+            #        self.SCREEN, (255, 0, 0),
+            #        pygame.Rect(
+            #            enemy.collision_rect.x - self.camera.offset.x,
+            #            enemy.collision_rect.y - self.camera.offset.y,
+            #           enemy.collision_rect.width,
+            #            enemy.collision_rect.height),
+            #        2)
 
                 # pygame.draw.rect(
                 #    self.SCREEN, (0, 255, 0),

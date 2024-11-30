@@ -28,8 +28,8 @@ class MainMenu:
         self.MAP_HEIGHT = 2
         # teste
 
-        self.boneco1 = self.load_and_scale_image('assets/images/player/knight/idle/00.png', (120, 120))
-        self.boneco2 = self.load_and_scale_image('assets/images/player/knight/attack/00.png', (120, 120))
+        self.boneco1_animation = [pygame.image.load(f"assets/images/player/knight/idle/0{i}.png").convert_alpha() for i in range(1, 6)]
+        self.boneco2_animation = [pygame.image.load(f"assets/images/enemies/torch_goblin/idle/0{i}.png").convert_alpha() for i in range(1, 6)]
 
         self.foam_animation = [pygame.image.load("assets/images/map/water/00.png").convert_alpha(),
                                pygame.image.load("assets/images/map/water/01.png").convert_alpha(),
@@ -40,10 +40,15 @@ class MainMenu:
                                pygame.image.load("assets/images/map/water/06.png").convert_alpha(),
                                pygame.image.load("assets/images/map/water/07.png").convert_alpha()]
 
-        self.animation_speed = 0.2
+        self.boneco1_animation = [pygame.transform.scale(i, (int(i.get_width() * 0.7), int(i.get_height() * 0.7))).convert_alpha() for i in self.boneco1_animation]
+        self.boneco2_animation = [pygame.transform.scale(i, (int(i.get_width() * 0.7), int(i.get_height() * 0.7))).convert_alpha() for i in self.boneco2_animation]
+
+        self.animation_speed = 0.08
         self.frame_counter = 0
         self.current_frame = 0
         self.foam_image = self.foam_animation[0]
+        self.boneco1_image = self.boneco1_animation[0]
+        self.boneco2_image = self.boneco2_animation[0]
         self.sand_image = pygame.image.load("assets/images/map/ground/sand_tile.png").convert_alpha()
 
         self.background_image = self.load_and_scale_image('assets/images/menu/Background.png',(self.screen.get_width(), self.screen.get_height()))
@@ -81,6 +86,18 @@ class MainMenu:
         if self.frame_counter >= len(foam_rescaled):
             self.frame_counter = 0
         self.foam_image = foam_rescaled[int(self.frame_counter)]
+
+    def animate_boneco1(self):
+        self.frame_counter += self.animation_speed
+        if self.frame_counter >= len(self.boneco1_animation):
+            self.frame_counter = 0
+        self.boneco1_image = self.boneco1_animation[int(self.frame_counter)]
+
+    def animate_boneco2(self):
+        self.frame_counter += self.animation_speed
+        if self.frame_counter >= len(self.boneco2_animation):
+            self.frame_counter = 0
+        self.boneco2_image = self.boneco2_animation[int(self.frame_counter)]
 
     def draw_text(self, text, color, x, y, font_size):
         self.font = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), font_size)
@@ -125,6 +142,8 @@ class MainMenu:
             self.draw_text(option, color, text_x, text_y, 25)
 
         self.animate_foam()
+        self.animate_boneco1()
+        self.animate_boneco2()
 
         foam_x = (self.width - self.foam_image.get_width()) // 2 - int(self.width * 0.1)
         foam_y = (self.height - self.foam_image.get_height()) // 2 - int(self.height * 0.4)
@@ -133,9 +152,9 @@ class MainMenu:
         sand_x = (self.width - self.sand_image.get_width()) // 2 - int(self.width * 0.1)
         sand_y = (self.height - self.sand_image.get_height()) // 2 - int(self.height * 0.4)
         self.screen.blit(self.sand_image, (sand_x, sand_y))
-        boneco_x = (self.width - self.boneco1.get_width()) // 2 - int(self.width * 0.1)
-        boneco_y = (self.height - self.boneco1.get_height()) // 2 - int(self.height * 0.4)
-        self.screen.blit(self.boneco1, (boneco_x, boneco_y))
+        boneco_x = (self.width - self.boneco1_image.get_width()) // 2 - int(self.width * 0.1)
+        boneco_y = (self.height - self.boneco1_image.get_height()) // 2 - int(self.height * 0.4)
+        self.screen.blit(self.boneco1_image, (boneco_x, boneco_y))
 
 
         foam_x = (self.width - self.foam_image.get_width()) // 2 + int(self.width * 0.1)
@@ -146,9 +165,9 @@ class MainMenu:
         sand_y = (self.height - self.sand_image.get_height()) // 2 + int(self.height * 0.4)
         self.screen.blit(self.sand_image, (sand_x, sand_y))
 
-        boneco_2_x = (self.width - self.boneco2.get_width()) // 2 + int(self.width * 0.1)
-        boneco_2_y = (self.height - self.boneco2.get_height()) // 2 + int(self.height * 0.4)
-        self.screen.blit(self.boneco2, (boneco_2_x, boneco_2_y))
+        boneco_2_x = (self.width - self.boneco2_image.get_width()) // 2 + int(self.width * 0.1)
+        boneco_2_y = (self.height - self.boneco2_image.get_height()) // 2 + int(self.height * 0.4)
+        self.screen.blit(self.boneco2_image, (boneco_2_x, boneco_2_y))
 
         self.cursor.draw(self.screen)
         pygame.display.flip()

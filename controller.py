@@ -1,7 +1,7 @@
 import pygame
 from pygame.time import Clock
 from MainMenuController import MainMenuController
-from scenes.GameScene import GameScene
+
 pygame.init()
 
 def main():

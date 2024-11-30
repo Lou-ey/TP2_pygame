@@ -1,30 +1,32 @@
 import pygame
-import time  # Para esperar durante o carregamento
 
 class LoadingScene:
     def __init__(self):
         self.font = pygame.font.Font(None, 36)
-        self.text = self.font.render("Loading...", True, (255, 255, 255))
 
     def run(self, game_scene):
-        """Simula o carregamento e depois passa para o GameScene"""
-        start_ticks = pygame.time.get_ticks()  # Marca o tempo de início
+        """Exibe a tela de carregamento enquanto carrega a cena do jogo."""
+        screen = pygame.display.get_surface()
+        clock = pygame.time.Clock()
 
-        # Simula o tempo de carregamento
-        while True:
-            seconds = (pygame.time.get_ticks() - start_ticks) / 1000  # Tempo decorrido em segundos
+        while not game_scene.loaded:  # Continua até o jogo estar completamente carregado
+            screen.fill((0, 0, 0))
 
-            # Se passou o tempo de carregamento, inicia a GameScene
-            if seconds > 2:  # Carrega por 2 segundos, você pode mudar o tempo conforme necessário
-                return game_scene  # Retorna a instância do GameScene
+            # Desenha o texto de carregamento
+            text = self.font.render("Loading...", True, (219, 87, 26))
+            screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2,
+                               screen.get_height() // 2 - text.get_height() // 2 - 20))
 
-            # Desenha a tela de carregamento
-            self.draw()
+            # Desenha uma barra de progresso
+            progress_width = int((game_scene.load_progress / game_scene.total_steps) * 300)
+            progress_bar_rect = pygame.Rect((screen.get_width() // 2 - 150,
+                                             screen.get_height() // 2 + 20),
+                                            (progress_width, 20))
+            pygame.draw.rect(screen, (219, 87, 26), progress_bar_rect)
+            pygame.draw.rect(screen, (255, 255, 255), progress_bar_rect, 2)
 
             pygame.display.update()
+            clock.tick(60)
 
-    def draw(self):
-        """Desenha a tela de carregamento"""
-        screen = pygame.display.get_surface()
-        screen.fill((0, 0, 0))
-        screen.blit(self.text, (screen.get_width() // 2 - self.text.get_width() // 2, screen.get_height() // 2 - self.text.get_height() // 2))
+            # Executa uma etapa do carregamento
+            game_scene.load_step()

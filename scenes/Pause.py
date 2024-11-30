@@ -53,8 +53,6 @@ class Pause:
                         print("Bora para o main menu")
 
 
-
-
     def draw(self):
         # Desenha a imagem de fundo
         self.screen.blit(self.background_image, (0, 0))
@@ -72,7 +70,6 @@ class Pause:
             self.screen.blit(self.with_sound, self.with_sound_rect.topleft)
 
         #pygame.draw.rect(self.screen, (255, 0, 0), self.with_sound_rect, 2)
-
 
         self.cursor.draw(self.screen)
         self.cursor.show()

@@ -13,6 +13,7 @@ from utils.Cursor import Cursor
 from scenes.MainMenu import MainMenu
 from scenes.GameOver import GameOver
 from scenes.Pause import Pause
+from utils.State import State
 
 class GameScene:
     def __init__(self):
@@ -22,8 +23,8 @@ class GameScene:
         pygame.display.set_caption("Vampire Diaries")
 
         self.TILE_SIZE = 64
-        self.MAP_WIDTH = 500
-        self.MAP_HEIGHT = 500
+        self.MAP_WIDTH = 60
+        self.MAP_HEIGHT = 60
         self.CURSOR_SIZE = (15, 23)
         self.CHARACTER_SIZE = (170, 170)
         self.map_layout = self.generate_map()
@@ -32,6 +33,8 @@ class GameScene:
         # Instancia da camera
         self.camera = CameraGroup(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.MAP_WIDTH * self.TILE_SIZE, self.MAP_HEIGHT * self.TILE_SIZE)
         self.cursor = Cursor("assets/images/UI/pointer/01.png", self.CURSOR_SIZE)  # Instancia do cursor
+
+        self.current_state = State.GAME
 
         self.cursor.hide()  # Esconde o cursor
 
@@ -42,10 +45,10 @@ class GameScene:
         # Instancia dos inimigos
         self.enemies = pygame.sprite.Group()
 
-        self.num_trees = 2000
-        self.num_stones = 1000
-        self.num_mushrooms = 1000
-        self.num_bushes = 1000
+        self.num_trees = 500
+        self.num_stones = 200
+        self.num_mushrooms = 200
+        self.num_bushes = 200
 
         self.generate_trees(self.num_trees)
         self.generate_stones(self.num_stones)
@@ -74,8 +77,17 @@ class GameScene:
 
         self.game_over_start_time = None
 
+        self.loaded = False
+        self.load_progress = 0
+        self.total_steps = 10
+
+    def load_step(self):
+        self.load_progress += 0.2
+        if self.load_progress >= self.total_steps:
+            self.loaded = True
+
     def switch_to_main_menu(self):
-        self.menu_manager.menuPrincipal()
+        self.current_state = State.MENU
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -255,13 +267,12 @@ class GameScene:
         # ataque do personagem
         for enemy in self.enemies:
             if self.character.attack_rect.colliderect(enemy.collision_rect):
-                enemy.take_damage(self.character.attack)
+                enemy.take_damage(self.character.attack, self.character.rect.center)
 
             # Verifica se o inimigo foi derrotado
             if enemy.is_defeated:
                 self.character.gain_xp(enemy.give_xp())
                 enemy.die()
-
 
     def render(self):
         #self.SCREEN.fill(self.background_color)
@@ -272,7 +283,6 @@ class GameScene:
         elif self.is_paused:
             self.pause_screen.draw()
             self.pause_screen.handle_events()
-
 
         else:
             character_x, character_y = self.character.rect.center
@@ -355,8 +365,6 @@ class GameScene:
 
     def run(self):
         self.handle_events()
-
-
         if not self.is_paused:
             self.update()
         self.render()

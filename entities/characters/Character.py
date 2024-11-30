@@ -165,7 +165,6 @@ class Character(pygame.sprite.Sprite):
             if self.combo_stage == 0:  # Primeiro golpe
                 start_frame = 0
                 end_frame = mid_frame  # Vai até o frame 5
-
             elif self.combo_stage == 1:  # Segundo golpe
                 start_frame = mid_frame  # Começa do frame 6
                 end_frame = total_frames  # Vai até o último frame

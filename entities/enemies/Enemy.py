@@ -85,12 +85,19 @@ class Enemy(pygame.sprite.Sprite):
         self.is_defeated = True
         self.kill()
 
-    def take_damage(self, damage):
-        """Reduz a vida do inimigo e verifica se ele foi derrotado"""
+    def take_damage(self, damage, attacker_position):
+        """Reduz a vida do inimigo e verifica se ele foi derrotado, aplica knockback"""
         self.health -= damage
-        # o inimigo fica branquinho ao tomar dano
+        # O inimigo fica branquinho ao tomar dano
         self.image = self.take_damage_image
-        self.knockback(pygame.math.Vector2(1, 0), 5)
+
+        # Calcular a direção do knockback (oposta à direção do atacante)
+        direction = pygame.math.Vector2(self.rect.center) - pygame.math.Vector2(attacker_position)
+        direction = direction.normalize()  # Normaliza o vetor para garantir que a força do empurrão seja consistente
+
+        # Aplica o knockback com a força especificada
+        self.knockback(direction, 5)
+
         if self.health <= 0:
             self.die()
 

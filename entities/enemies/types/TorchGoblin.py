@@ -1,20 +1,18 @@
-from random import random
-
 import pygame
+from random import random
 from entities.enemies.Enemy import Enemy
 
 class TorchGoblin(Enemy, pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-
-        # Inicializa com atributos específicos do Goblin
-        super().__init__(name="Goblin", health=50, attack=0.7, defense=5, speed=1, width=192, height=192, xp_range=range(5, 15))
+        super().__init__(name="Goblin", health=100, attack=1, defense=5, speed=1, width=192, height=192, xp_range=range(5, 15))
         self.x = x
         self.y = y
 
         self.idle_animation = [pygame.image.load(f"assets/images/enemies/torch_goblin/idle/0{i}.png").convert_alpha() for i in range(1, 7)]
         self.walk_animation = [pygame.image.load(f"assets/images/enemies/torch_goblin/walk/0{i}.png").convert_alpha() for i in range(1, 6)]
         #self.die_animation = [pygame.image.load(f"assets/images/enemies/torch_goblin/die/0{i}.png").convert_alpha() for i in range(1, 7)]
+        self.take_damage_image = pygame.image.load("assets/images/enemies/torch_goblin/take_damage/00.png").convert_alpha()
 
         self.image = pygame.transform.scale(self.idle_animation[0], (self.width, self.height))
         self.rect = self.image.get_rect(center=(self.x, self.y))

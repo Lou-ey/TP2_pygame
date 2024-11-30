@@ -22,6 +22,11 @@ class Character(pygame.sprite.Sprite):
         self.height = height
         self.displacement = 0
 
+        self.combo_stage = 0
+        self.max_combo_stage = 2
+        self.attack_stage_duration = [10, 10]  # Duração de cada ataque
+        self.attack_timer = 0
+
         # Carrega as animações
         self.idle_animation = [pygame.image.load(f"assets/images/player/knight/idle/0{i}.png").convert_alpha() for i in range(1, 6)]
         self.walk_animation = [pygame.image.load(f"assets/images/player/knight/walk/0{i}.png").convert_alpha() for i in range(1, 6)]
@@ -34,16 +39,16 @@ class Character(pygame.sprite.Sprite):
 
         # Criar o collision_rect com offset proporcional
         collision_width = int(self.rect.width * 0.2)  # 20% da largura do rect principal
-        collision_height = int(self.rect.height * 0.15)  # 10% da altura do rect principal
+        collision_height = int(self.rect.height * 0.15)  # 15% da altura do rect principal
 
         # Centraliza o collision_rect no rect principal
         self.collision_rect = pygame.Rect(0, 0, collision_width, collision_height)
-        self.collision_rect.center = self.rect.center
+        #self.collision_rect.center = self.rect.center
 
-        self.attack_rect_width = int(self.rect.width * 0.3)  # Largura do attack_rect (150% do personagem)
-        self.attack_rect_height = int(self.rect.height * 0.4)  # Altura do attack_rect (60% do personagem)
+        #self.attack_rect_width = int(self.rect.width * 0.3)  # 30% da largura do rect principal
+        #self.attack_rect_height = int(self.rect.height * 0.4)  # 40% da altura do rect principal
 
-        self.attack_rect = pygame.Rect(0, 0, self.attack_rect_width, self.attack_rect_height)
+        self.attack_rect = pygame.Rect(0, 0, 0, 0)
         self.attack_rect.center = self.rect.center
 
         self.health_bar = LifeBar(self.max_health, self.current_health, self.health_bar_width)
@@ -77,15 +82,11 @@ class Character(pygame.sprite.Sprite):
     def update(self, keys):
         self.is_moving = False
 
-        if self.facing_right:
-            self.attack_rect.midleft = self.rect.midright
-        elif self.facing_left:
-            self.attack_rect.midright = self.rect.midleft
-
         # Inicia o ataque com o espaço
         if keys[pygame.K_SPACE] and not self.is_attacking:
             self.is_attacking = True
-            self.attack_timer = self.attack_duration
+            self.combo_stage = 0
+            self.attack_timer = self.attack_stage_duration[self.combo_stage]
             self.frame_counter = 0
 
         if self.is_dead: # Verifica se o personagem está morto
@@ -116,6 +117,11 @@ class Character(pygame.sprite.Sprite):
                     self.flip_animation()
 
         self.collision_rect.center = self.rect.center
+
+        if self.facing_right:
+            self.attack_rect.midleft = self.collision_rect.midright
+        elif self.facing_left:
+            self.attack_rect.midright = self.collision_rect.midleft
 
         # Escolhe a animação correta
         if self.is_attacking:
@@ -149,17 +155,56 @@ class Character(pygame.sprite.Sprite):
             self.image = self.walk_animation[int(self.frame_counter)]
 
     def animate_attack(self):
-        """Animação de ataque."""
-        if self.attack_timer > 0:
+        """Animação e lógica de ataque."""
+        # Verifica se o personagem está atacando e se não ultrapassou o estágio máximo do combo
+        if self.combo_stage < self.max_combo_stage:
+            total_frames = len(self.attack_animation)  # Total de frames da animação
+            mid_frame = total_frames // 2  # Frame do meio da animação
+
+            # Definindo os intervalos para os dois ataques
+            if self.combo_stage == 0:  # Primeiro golpe
+                start_frame = 0
+                end_frame = mid_frame  # Vai até o frame 5
+
+            elif self.combo_stage == 1:  # Segundo golpe
+                start_frame = mid_frame  # Começa do frame 6
+                end_frame = total_frames  # Vai até o último frame
+
+            # Atualiza o contador de frames
             self.frame_counter += self.attack_animation_speed
-            if int(self.frame_counter) >= len(self.attack_animation):
-                self.frame_counter = len(self.attack_animation) - 1  # Mantém o último quadro no ataque
+
+            # Verifica se a animação atual está no intervalo do combo
+            if int(self.frame_counter) >= end_frame:
+                self.frame_counter = end_frame - 1  # Mantém no último frame do estágio atual
+
+            # Define a imagem da animação de ataque
             self.image = self.attack_animation[int(self.frame_counter)]
-            self.attack_timer -= 1
+
+            # Define a hitbox do ataque
+            if self.combo_stage == 0:  # Primeiro golpe
+                self.attack_rect.width = int(self.rect.width * 0.35)
+                self.attack_rect.height = int(self.rect.height * 0.45)
+            elif self.combo_stage == 1:  # Segundo golpe
+                self.attack_rect.width = int(self.rect.width * 0.35)
+                self.attack_rect.height = int(self.rect.height * 0.45)
+
+            # Atualiza o temporizador de ataque
+            self.attack_timer -= 0.5
+
+            # Verifica se o ataque terminou
+            if self.attack_timer <= 0:
+                self.combo_stage += 1  # Avança para o próximo ataque
+                if self.combo_stage == 1:  # Verifica se é o último ataque
+                    self.attack_rect.size = (0, 0)  # Desativa o ataque (hitbox)
+                    self.attack_timer = self.attack_stage_duration[self.combo_stage]  # Atualiza o temporizador
+                if self.combo_stage < self.max_combo_stage: # Verifica se não ultrapassou o estágio máximo
+                    self.attack_timer = self.attack_stage_duration[self.combo_stage]  # Atualiza o temporizador
+                    self.frame_counter = mid_frame  # Reseta o contador de frames para o próximo golpe
+                else:
+                    self.is_attacking = False  # Finaliza o ataque
+                    self.attack_rect.size = (0, 0)  # Desativa o ataque (hitbox)
         else:
-            # Termina o ataque e reseta o estado
-            self.is_attacking = False
-            self.frame_counter = 0
+            self.is_attacking = False  # Caso tenha finalizado o combo
 
     def animate_die(self):
         """Animação de morte."""
@@ -173,9 +218,8 @@ class Character(pygame.sprite.Sprite):
             self.image = self.die_animation[-1] # Mantém a última imagem
 
     def attack(self, enemy):
-        if self.is_attacking:
-            if self.attack_rect.colliderect(enemy.collision_rect):
-                enemy.take_damage(self.attack)
+        if self.is_attacking and self.attack_rect.colliderect(enemy.collision_rect):
+            enemy.take_damage(self.attack)
 
     def die(self):
         if self.current_health == 0:
@@ -200,7 +244,7 @@ class Character(pygame.sprite.Sprite):
         self.xp_bar.update(self.xp_bar.current_xp)
 
     def level_up(self):
-        if self.xp_bar.current_xp == self.xp_bar.max_xp:
+        if self.xp_bar.current_xp >= self.xp_bar.max_xp:
             self.current_level += 1
             self.xp_bar.max_xp *= 2
             self.xp_bar.current_xp = 0

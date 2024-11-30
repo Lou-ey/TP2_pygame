@@ -21,11 +21,14 @@ class Enemy(pygame.sprite.Sprite):
         self.original_image = self.image
         self.is_facing_right = True
 
+        self.take_damage_image = None
+
         self.idle_animation = None
         self.walk_animation = None
 
     def flip(self):
         self.walk_animation = [pygame.transform.flip(image, True, False) for image in self.walk_animation]
+        self.take_damage_image = pygame.transform.flip(self.take_damage_image, True, False)
 
     def move_towards_player(self, player_position):
         if isinstance(player_position, tuple) and len(player_position) == 2:
@@ -85,5 +88,13 @@ class Enemy(pygame.sprite.Sprite):
     def take_damage(self, damage):
         """Reduz a vida do inimigo e verifica se ele foi derrotado"""
         self.health -= damage
+        # o inimigo fica branquinho ao tomar dano
+        self.image = self.take_damage_image
+        self.knockback(pygame.math.Vector2(1, 0), 5)
         if self.health <= 0:
             self.die()
+
+    def knockback(self, direction, force):
+        """Empurra o inimigo na direção especificada"""
+        self.rect.x += direction.x * force
+        self.rect.y += direction.y * force

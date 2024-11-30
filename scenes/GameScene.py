@@ -245,6 +245,17 @@ class GameScene:
             if self.character.collision_rect.colliderect(enemy.collision_rect):
                 self.character.take_damage(enemy.attack)
 
+        # ataque do personagem
+        for enemy in self.enemies:
+            if self.character.attack_rect.colliderect(enemy.collision_rect):
+                enemy.take_damage(self.character.attack)
+
+            # Verifica se o inimigo foi derrotado
+            if enemy.is_defeated:
+                self.character.gain_xp(enemy.give_xp())
+                enemy.die()
+
+
     def render(self):
         #self.SCREEN.fill(self.background_color)
 
@@ -304,13 +315,13 @@ class GameScene:
                 2
             )
 
-            pygame.draw.rect(
-                self.SCREEN, (0, 0, 255), # Azul
-                pygame.Rect(
-                    self.character.rect.x - self.camera.offset.x,
-                    self.character.rect.y - self.camera.offset.y,
-                    self.character.rect.width, self.character.rect.height),
-                2)
+            #pygame.draw.rect(
+            #    self.SCREEN, (0, 0, 255), # Azul
+            #    pygame.Rect(
+            #        self.character.rect.x - self.camera.offset.x,
+            #        self.character.rect.y - self.camera.offset.y,
+            #        self.character.rect.width, self.character.rect.height),
+            #    2)
 
             # Desenha o rect dos inimigos ajustado pela câmera
             for enemy in self.enemies:

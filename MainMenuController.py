@@ -1,6 +1,7 @@
 from scenes.MainMenu import MainMenu
 import pygame
 from scenes.GameScene import GameScene
+from scenes.Pause import Pause
 from utils.AudioPlayer import AudioPlayer
 from utils.State import State
 
@@ -9,9 +10,10 @@ class MainMenuController:
         pygame.init()
         self.audio_gestor = AudioPlayer()
         self.menu = MainMenu()
+        self.State = State
         self.running = True
         self.show_options = False
-        self.current_state = State.MENU
+        self.current_state = self.State.MENU
         self.to_play = False
         self.game = None
 
@@ -28,7 +30,6 @@ class MainMenuController:
                             display_info = pygame.display.Info()
                             self.menu.width, self.menu.height = display_info.current_w, display_info.current_h
                             self.menu.screen = pygame.display.set_mode((display_info.current_w, display_info.current_h), pygame.FULLSCREEN)
-
                         else:
                             self.menu.screen = pygame.display.set_mode((self.menu.width, self.menu.height))
 
@@ -56,7 +57,7 @@ class MainMenuController:
 
     def run(self):
         self.menu.mouse_position = pygame.mouse.get_pos()
-        if self.current_state == State.MENU:
+        if self.current_state == self.State.MENU:
             self.menu.cursor.update()
             self.handle_events_menu()
             if self.show_options:
@@ -64,5 +65,5 @@ class MainMenuController:
             else:
                 self.menu.menuPrincipal()
 
-        elif self.current_state == State.GAME:
+        elif self.current_state == self.State.GAME:
             self.game.run()

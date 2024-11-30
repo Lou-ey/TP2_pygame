@@ -16,9 +16,9 @@ from scenes.Pause import Pause
 
 class GameScene:
     def __init__(self):
-        self.SCREEN_WIDTH = 800 #pygame.display.Info().current_w
-        self.SCREEN_HEIGHT = 600 #pygame.display.Info().current_h
-        self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        self.SCREEN_WIDTH = pygame.display.Info().current_w
+        self.SCREEN_HEIGHT = pygame.display.Info().current_h
+        self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.WINDOWMAXIMIZED)
         pygame.display.set_caption("Vampire Diaries")
 
         self.TILE_SIZE = 64
@@ -66,12 +66,16 @@ class GameScene:
         self.menu_manager = MainMenu()
 
         self.game_over_screen = GameOver(self.SCREEN)
-        self.pause_screen = Pause(self.SCREEN)
+        self.pause_screen = Pause(self.SCREEN, self)
 
         self.is_paused = False
         self.is_game_over = False
+        self.is_muted = False
 
         self.game_over_start_time = None
+
+    def switch_to_main_menu(self):
+        self.menu_manager.menuPrincipal()
 
     def generate_map(self):
         empty_map = [[0 for _ in range(self.MAP_WIDTH)] for _ in range(self.MAP_HEIGHT)]
@@ -212,6 +216,9 @@ class GameScene:
         if self.is_paused or self.is_game_over:
             return
 
+        if self.is_muted:
+            self.audio_player.mute_music()
+
         keys = pygame.key.get_pressed()
         self.character.update(keys)
         self.camera.center_on(self.character)  # Centraliza a câmera no personagem
@@ -264,7 +271,9 @@ class GameScene:
             self.cursor.show()
         elif self.is_paused:
             self.pause_screen.draw()
-            self.cursor.show()
+            self.pause_screen.handle_events()
+
+
         else:
             character_x, character_y = self.character.rect.center
             self.culling(character_x, character_y)
@@ -346,6 +355,7 @@ class GameScene:
 
     def run(self):
         self.handle_events()
+
 
         if not self.is_paused:
             self.update()

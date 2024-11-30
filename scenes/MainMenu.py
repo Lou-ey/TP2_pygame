@@ -1,7 +1,6 @@
 import pygame
 import os
 from utils.Cursor import Cursor
-
 from utils.AudioPlayer import AudioPlayer
 
 class MainMenu:
@@ -16,12 +15,8 @@ class MainMenu:
 
         pygame.mouse.set_visible(False)
         pygame.display.set_caption("Vampire Diaries")
-        display_info = pygame.display.Info()
-        #Adaptar largura e altura ao tamanho das telas
-        #self.width = pygame.display.Info().current_w
-        #self.height = pygame.display.Info().current_h
-        self.width = 800
-        self.height = 600
+        self.width = 1200
+        self.height = 800
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.options = ["Play", "Options", "Quit"]
         self.selected_option = 0
@@ -51,10 +46,10 @@ class MainMenu:
         self.foam_image = self.foam_animation[0]
         self.sand_image = pygame.image.load("assets/images/map/ground/sand_tile.png").convert_alpha()
 
-        self.background_image = self.load_and_scale_image('assets/images/menu/Background.png',(self.width, self.height))
-        self.smooth_background = self.load_and_scale_image('assets/images/menu/Background_blur.png',(self.width, self.height))
+        self.background_image = self.load_and_scale_image('assets/images/menu/Background.png',(self.screen.get_width(), self.screen.get_height()))
+        self.smooth_background = self.load_and_scale_image('assets/images/menu/Background_blur.png',(self.screen.get_width(), self.screen.get_height()))
         self.banner_menu = self.load_and_scale_image('assets/images/menu/Banner_Vertical.png', (350, 450))
-        self.banner_menu_options = self.load_and_scale_image('assets/images/menu/Banner_Vertical.png', (550, 700))
+        self.banner_menu_options = self.load_and_scale_image('assets/images/menu/Banner_Vertical.png', (self.screen.get_width() - self.screen.get_width() * 0.60, self.screen.get_height() - self.screen.get_height() * 0.25))
         self.banner_image = self.load_and_scale_image('assets/images/menu/Ribbon_Red_3Slides.png', (350, 80))
         self.button_image = self.load_and_scale_image('assets/images/menu/Button_Red_3Slides.png', (150, 50))
         self.back_button = self.load_and_scale_image('assets/images/UI/menuUI/voltar.png', (70, 70))
@@ -65,7 +60,7 @@ class MainMenu:
         self.sound_muted = self.load_and_scale_image('assets/images/UI/menuUI/Sound_mute.png', (70, 70))
         self.muted = False
         self.fullscreen_off = self.load_and_scale_image('assets/images/UI/menuUI/Fullscreen_off.png', (70, 70))
-        self.fullscreen_off_rect = self.fullscreen_off.get_rect(center=(self.width // 2, self.height * 0.65))
+        self.fullscreen_off_rect = self.fullscreen_off.get_rect(center=(self.width // 2, self.screen.get_height() * 0.57))
         self.fullscreen_on = self.load_and_scale_image('assets/images/UI/menuUI/Fullscreen_on.png', (70, 70))
         self.fullscreened = False
         # Custom cursor instance
@@ -164,7 +159,7 @@ class MainMenu:
         banner_x = (self.width - self.banner_menu_options.get_width()) // 2
         banner_y = (self.height - self.banner_menu_options.get_height()) // 2
         self.screen.blit(self.banner_menu_options, (banner_x, banner_y))
-        self.draw_text("Options Menu", (0, 0, 0), self.width // 2, self.height * 0.20, 40)
+        self.draw_text("Options Menu", (0, 0, 0), self.screen.get_width() // 2, self.screen.get_height() * 0.30, 40)
 
         mouse_position = pygame.mouse.get_pos()
         if self.back_button_rect.collidepoint(mouse_position):
@@ -173,13 +168,13 @@ class MainMenu:
             self.screen.blit(self.back_button, self.back_button_rect.topleft)
 
 
-        self.draw_text("Sound", (0, 0, 0), self.width // 2, self.height * 0.35, 30)
+        self.draw_text("Sound", (0, 0, 0), self.screen.get_width() // 2, self.screen.get_height() * 0.40, 30)
         if self.muted:
             self.screen.blit(self.sound_muted, self.with_sound_rect.topleft)
         else:
             self.screen.blit(self.with_sound, self.with_sound_rect.topleft)
 
-        self.draw_text("FullScreen", (0, 0, 0), self.width // 2, self.height * 0.55, 30)
+        self.draw_text("FullScreen", (0, 0, 0), self.screen.get_width()// 2, self.screen.get_height() * 0.52, 30)
 
         if self.fullscreened:
             self.screen.blit(self.fullscreen_on, self.fullscreen_off_rect.topleft)

@@ -6,6 +6,10 @@ class TorchGoblin(Enemy, pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         super().__init__(name="Goblin", health=100, attack=1, defense=5, speed=1, width=192, height=192, xp_range=range(5, 15))
+
+        self.current_time = False
+        self.invulnerability_duration = 250
+        self.last_damage_time = 0
         self.x = x
         self.y = y
 
@@ -31,6 +35,10 @@ class TorchGoblin(Enemy, pygame.sprite.Sprite):
         self.is_facing_right = True
 
     def update(self, player_position, enemies=None, character=None):
+        self.current_time = pygame.time.get_ticks()
+        if self.is_invulnerable and self.current_time - self.last_damage_time >= self.invulnerability_duration:
+            self.is_invulnerable = False
+
         if enemies is None:
             enemies = []  # Lista vazia se nenhum inimigo for passado
         self.move_towards_player(player_position)

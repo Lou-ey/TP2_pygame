@@ -1,6 +1,7 @@
 import pygame
 from utils.LifeBar import LifeBar
 from utils.XPBar import XPBar
+from utils.AudioPlayer import AudioPlayer
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, name, max_health, max_xp, attack, defense, speed, x, y, width, height):
@@ -21,6 +22,9 @@ class Character(pygame.sprite.Sprite):
         self.width = width
         self.height = height
         self.displacement = 0
+
+        self.audio_player = AudioPlayer()
+        self.audio_player.load_sounds()
 
         self.combo_stage = 0
         self.max_combo_stage = 2
@@ -248,3 +252,4 @@ class Character(pygame.sprite.Sprite):
             self.xp_bar.max_xp *= 2
             self.xp_bar.current_xp = 0
             self.xp_bar.update_bar()
+            self.audio_player.play_sound('level_up', 0.2)

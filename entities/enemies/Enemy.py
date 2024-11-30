@@ -1,5 +1,6 @@
 import pygame
 import random
+from utils.AudioPlayer import AudioPlayer
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, name, health, attack, defense, speed, width, height, xp_range):
@@ -14,6 +15,9 @@ class Enemy(pygame.sprite.Sprite):
         self.xp_range = xp_range
         self.is_defeated = False
 
+        self.audio_player = AudioPlayer()
+        self.audio_player.load_sounds()
+
         self.image = None
         self.rect = None
         self.collision_rect = None
@@ -25,6 +29,10 @@ class Enemy(pygame.sprite.Sprite):
 
         self.idle_animation = None
         self.walk_animation = None
+
+        self.is_invulnerable = False
+        self.invulnerability_duration = 0
+        self.last_damage_time = 0
 
     def flip(self):
         self.walk_animation = [pygame.transform.flip(image, True, False) for image in self.walk_animation]
@@ -86,20 +94,25 @@ class Enemy(pygame.sprite.Sprite):
         self.kill()
 
     def take_damage(self, damage, attacker_position):
-        """Reduz a vida do inimigo e verifica se ele foi derrotado, aplica knockback"""
-        self.health -= damage
-        # O inimigo fica branquinho ao tomar dano
-        self.image = self.take_damage_image
+        """Reduz a vida do inimigo e aplica knockback."""
+        current_time = pygame.time.get_ticks()  # Tempo atual em milissegundos
+        self.image = self.take_damage_image  # Muda a imagem para a de dano
+        if not self.is_invulnerable:  # Só aplica dano se não estiver invulnerável
+            self.health -= damage  # Reduz a vida
 
-        # Calcular a direção do knockback (oposta à direção do atacante)
-        direction = pygame.math.Vector2(self.rect.center) - pygame.math.Vector2(attacker_position)
-        direction = direction.normalize()  # Normaliza o vetor para garantir que a força do empurrão seja consistente
+            self.audio_player.play_sound("hit", 0.05)
 
-        # Aplica o knockback com a força especificada
-        self.knockback(direction, 5)
+            # Calcular e aplicar knockback
+            direction = pygame.math.Vector2(self.rect.center) - pygame.math.Vector2(attacker_position)
+            direction = direction.normalize()
+            self.knockback(direction, 10)
 
-        if self.health <= 0:
-            self.die()
+            # Ativar invulnerabilidade
+            self.is_invulnerable = True
+            self.last_damage_time = current_time
+
+            if self.health <= 0:
+                self.die()
 
     def knockback(self, direction, force):
         """Empurra o inimigo na direção especificada"""

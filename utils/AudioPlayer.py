@@ -12,17 +12,20 @@ class AudioPlayer:
         self.volume = 0.03
 
     def load_sounds(self):
-        pass
         # Carrega todos os sons
-        #self.sounds["attack"] = pygame.mixer.Sound(os.path.join("assets", "sounds", "attack.wav"))
-        #self.sounds["die"] = pygame.mixer.Sound(os.path.join("assets", "sounds", "die.wav"))
-        #self.sounds["hit"] = pygame.mixer.Sound(os.path.join("assets", "sounds", "hit.wav"))
-        #self.sounds["pickup"] = pygame.mixer.Sound(os.path.join("assets", "sounds", "pickup.wav"))
+        #self.sounds['select'] = pygame.mixer.Sound('assets/sounds/game/sfx/select.wav')
+        self.sounds['hit'] = pygame.mixer.Sound('assets/sounds/game/sfx/hit.wav')
+        self.sounds['level_up'] = pygame.mixer.Sound('assets/sounds/game/sfx/level_up.wav')
+        self.sounds['game_over'] = pygame.mixer.Sound('assets/sounds/game/sfx/game_over.mp3')
+        #self.sounds['enemy_die'] = pygame.mixer.Sound('assets/sounds/game/enemy_die.wav')
+        #self.sounds['player_die'] = pygame.mixer.Sound('assets/sounds/game/player_die.wav')
+        #self.sounds['player_hit'] = pygame.mixer.Sound('assets/sounds/game/player_hit.wav')
 
-    def play_sound(self, sound_name):
+    def play_sound(self, sound_name, volume):
         # Toca um som
         if sound_name in self.sounds:
             self.sounds[sound_name].play()
+            self.sounds[sound_name].set_volume(volume)
 
     def load_music(self):
         # Carrega todas as músicas de fundo disponíveis

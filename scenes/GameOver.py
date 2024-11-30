@@ -1,5 +1,6 @@
 import pygame
 import os
+from utils.AudioPlayer import AudioPlayer
 
 class GameOver:
     def __init__(self, screen):
@@ -8,6 +9,7 @@ class GameOver:
         self.font_option = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30)
         self.overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 180))
+        self.audio_player = AudioPlayer()
 
     def draw(self):
         # Desenha o overlay
@@ -27,3 +29,5 @@ class GameOver:
         self.screen.blit(title_text, title_pos)
         self.screen.blit(restart_text, restart_pos)
         self.screen.blit(main_menu_text, main_menu_pos)
+
+        #self.audio_player.play_sound('game_over')  # Toca o som de game over

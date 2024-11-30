@@ -39,7 +39,7 @@ class GameScene:
         self.cursor.hide()  # Esconde o cursor
 
         # Instancia do personagem
-        self.character = Character("Player", 100, 10, 10, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
+        self.character = Character("Player", 100, 10, 25, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
         self.camera.add(self.character) # Adiciona o personagem à camera
 
         # Instancia dos inimigos
@@ -65,6 +65,8 @@ class GameScene:
 
         # Instancia do AudioPlayer
         self.audio_player = AudioPlayer()
+        self.audio_player.load_music()
+        self.audio_player.load_sounds()
 
         self.menu_manager = MainMenu()
 
@@ -238,13 +240,18 @@ class GameScene:
         self.cursor.update()
         self.character.die()
 
-        if self.character.current_health <= 0:
-            self.is_game_over = True
-            self.audio_player.stop_music()
-            return
-
         self.audio_player.load_music()
         self.audio_player.play_music()
+
+        if self.character.current_health <= 0:
+            # wait 3 seconds before showing game over screen
+            if self.game_over_start_time is None:
+                self.game_over_start_time = pygame.time.get_ticks()
+            elif pygame.time.get_ticks() - self.game_over_start_time >= 1000:
+                self.is_game_over = True
+                self.audio_player.stop_music()
+                self.audio_player.play_sound("game_over", 0.1)
+                return
 
         # Controla o tempo para spawnar novos inimigos
         current_time = pygame.time.get_ticks() # tick atual
@@ -268,7 +275,6 @@ class GameScene:
         for enemy in self.enemies:
             if self.character.attack_rect.colliderect(enemy.collision_rect):
                 enemy.take_damage(self.character.attack, self.character.rect.center)
-
             # Verifica se o inimigo foi derrotado
             if enemy.is_defeated:
                 self.character.gain_xp(enemy.give_xp())

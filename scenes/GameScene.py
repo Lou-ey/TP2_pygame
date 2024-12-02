@@ -82,7 +82,12 @@ class GameScene:
         self.loaded = False
         self.load_progress = 0
         self.total_steps = 10
-
+        self.tutorial_movement = pygame.image.load("assets/images/UI/menuUI/AWSD.png").convert_alpha()
+        self.tutorial_movement_scale = pygame.transform.scale(self.tutorial_movement, (self.SCREEN.get_width() * 0.09, self.SCREEN.get_height() * 0.09))
+        self.tutorial_atack = pygame.image.load("assets/images/UI/menuUI/space_bar.png").convert_alpha()
+        self.tutorial_atack_scale = pygame.transform.scale(self.tutorial_atack, (self.SCREEN.get_width() * 0.08, self.SCREEN.get_height() * 0.06))
+        self.tutorial_pause = pygame.image.load("assets/images/UI/menuUI/esc.png").convert_alpha()
+        self.tutorial_pause_scale = pygame.transform.scale(self.tutorial_pause, (self.SCREEN.get_width() * 0.04, self.SCREEN.get_height() * 0.06))
     def load_step(self):
         self.load_progress += 0.2
         if self.load_progress >= self.total_steps:
@@ -191,8 +196,8 @@ class GameScene:
                 if self.is_game_over:
                     if event.key == pygame.K_r:
                         self.restart_game()
-                    if event.key == pygame.K_m:
-                        self.return_to_main_menu()
+                    if event.key == pygame.K_e:
+                        quit()
                 if event.key == pygame.K_LCTRL:
                     self.cursor.show()
                 ### apenas para teste
@@ -311,6 +316,18 @@ class GameScene:
             f"XP: {self.character.xp_bar.current_xp}/{self.character.xp_bar.max_xp}", True, (255, 255, 255))
             self.SCREEN.blit(level_label, (10, 30))
             self.SCREEN.blit(xp_label, (self.SCREEN_WIDTH - 73, 25))
+
+            self.menu_manager.draw_text("Pause: ", (255, 255, 255),self.SCREEN.get_width() - self.SCREEN.get_width() * 0.96,self.SCREEN.get_height() - self.SCREEN.get_height() * 0.33, 25)
+            self.SCREEN.blit(self.tutorial_pause_scale, (self.SCREEN.get_width() - self.SCREEN.get_width() * 0.93, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.35))
+
+            self.menu_manager.draw_text("Movement: ", (255, 255, 255),self.SCREEN.get_width() - self.SCREEN.get_width() * 0.93, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.22,30)
+            self.SCREEN.blit(self.tutorial_movement_scale, (self.SCREEN.get_width() - self.SCREEN.get_width() * 0.87, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.27))
+
+            self.menu_manager.draw_text("Atack: ", (255, 255, 255),self.SCREEN.get_width() - self.SCREEN.get_width() * 0.96,self.SCREEN.get_height() - self.SCREEN.get_height() * 0.12, 25)
+            self.SCREEN.blit(self.tutorial_atack_scale, (self.SCREEN.get_width() - self.SCREEN.get_width() * 0.92, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.14))
+
+
+
 
             # Desenha o cursor se ele tiver uma imagem
             if self.cursor.image:

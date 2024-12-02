@@ -6,7 +6,7 @@ class Pause:
     def __init__(self, screen, game_scene):
         self.screen = screen
         self.game_scene = game_scene
-        self.font_title = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 60)
+        self.font_title = pygame.font.Font(os.path.join('assets/fonts/Jacquard12-Regular.ttf'), 100)
         self.font_option = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 40)
         self.overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 180))  # Preenchimento com transparência
@@ -23,12 +23,12 @@ class Pause:
 
         self.title_text = self.font_title.render("Paused", True, (255, 255, 255))
         self.resume_text = self.font_option.render("Resume (ESC)", True, (255, 255, 255))
-        self.main_menu_text = self.font_option.render("Main Menu", True, (255, 255, 255))
+        self.exit_text = self.font_option.render("Exit Game(E)", True, (255, 255, 255))
 
         #posicionar os textos na tela
         self.title_pos = self.title_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() * 0.3))
         self.resume_pos = self.resume_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2))
-        self.main_menu_pos = self.main_menu_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + 50))
+        self.exit_pos = self.exit_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + 50))
 
     def load_and_scale_image(self, path, size):
         image = pygame.image.load(path)
@@ -37,6 +37,9 @@ class Pause:
     def handle_events(self):
         self.mouse_position = pygame.mouse.get_pos()
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if self.with_sound_rect.collidepoint(self.mouse_position):
@@ -48,9 +51,8 @@ class Pause:
 
                     if self.resume_pos.collidepoint(self.mouse_position):
                         self.game_scene.is_paused = False
-                    elif self.main_menu_pos.collidepoint(self.mouse_position):
-                        self.game_scene.switch_to_main_menu()
-                        print("Bora para o main menu")
+                    elif self.exit_pos.collidepoint(self.mouse_position):
+                        quit()
 
 
     def draw(self):
@@ -62,7 +64,7 @@ class Pause:
 
         self.screen.blit(self.title_text, self.title_pos)
         self.screen.blit(self.resume_text, self.resume_pos)
-        self.screen.blit(self.main_menu_text, self.main_menu_pos)
+        self.screen.blit(self.exit_text, self.exit_pos)
 
         if self.is_muted:
             self.screen.blit(self.sound_muted, self.with_sound_rect.topleft)

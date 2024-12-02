@@ -161,12 +161,12 @@ class Character(pygame.sprite.Sprite):
 
     def animate_attack(self):
         """Animação e lógica de ataque."""
-        # Verifica se o personagem está atacando e se não ultrapassou o estágio máximo do combo
+        # Verifica se o personagem está a atacar
         if self.combo_stage < self.max_combo_stage:
             total_frames = len(self.attack_animation)  # Total de frames da animação
             mid_frame = total_frames // 2  # Frame do meio da animação
 
-            # Definindo os intervalos para os dois ataques
+            # Define os intervalos para os dois ataques
             if self.combo_stage == 0:  # Primeiro golpe
                 start_frame = 0
                 end_frame = mid_frame  # Vai até o frame 5

@@ -30,7 +30,8 @@ class MainMenuController:
                         if self.menu.fullscreened:
                             display_info = pygame.display.Info()
                             self.menu.width, self.menu.height = display_info.current_w, display_info.current_h
-                            self.menu.screen = pygame.display.set_mode((display_info.current_w, display_info.current_h), pygame.FULLSCREEN)
+                            print(display_info.current_w, display_info.current_h)
+                            self.menu.screen = pygame.display.set_mode((self.menu.width, self.menu.height), pygame.FULLSCREEN)
                         else:
                             self.menu.screen = pygame.display.set_mode((self.menu.width, self.menu.height))
 
@@ -62,6 +63,7 @@ class MainMenuController:
             self.menu.cursor.update()
             self.handle_events_menu()
             if self.show_options:
+
                 self.menu.options_menu()
             else:
                 self.menu.menuPrincipal()

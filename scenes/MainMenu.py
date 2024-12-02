@@ -58,14 +58,14 @@ class MainMenu:
         self.banner_image = self.load_and_scale_image('assets/images/menu/Ribbon_Red_3Slides.png', (350, 80))
         self.button_image = self.load_and_scale_image('assets/images/menu/Button_Red_3Slides.png', (150, 50))
         self.back_button = self.load_and_scale_image('assets/images/UI/menuUI/voltar.png', (70, 70))
-        self.back_button_rect = self.back_button.get_rect(center=(self.width // 2 - self.banner_menu_options.get_width() * 0.15,self.height // 2 - self.banner_menu_options.get_height() * 0.18))
+        self.back_button_rect = self.back_button.get_rect(center=(self.screen.get_width()// 2 - self.banner_menu_options.get_width() * 0.15,self.screen.get_height() // 2 - self.banner_menu_options.get_height() * 0.18))
         self.back_button_pressed = self.load_and_scale_image('assets/images/UI/menuUI/voltar_pressed.png', (70, 70))
         self.with_sound = self.load_and_scale_image('assets/images/UI/menuUI/with_Sound.png', (70, 70))
-        self.with_sound_rect = self.with_sound.get_rect(center=(self.width // 2 , self.height * 0.45))
+        self.with_sound_rect = self.with_sound.get_rect(center=(self.screen.get_width() // 2 , self.screen.get_height() * 0.45))
         self.sound_muted = self.load_and_scale_image('assets/images/UI/menuUI/Sound_mute.png', (70, 70))
         self.muted = False
         self.fullscreen_off = self.load_and_scale_image('assets/images/UI/menuUI/Fullscreen_off.png', (70, 70))
-        self.fullscreen_off_rect = self.fullscreen_off.get_rect(center=(self.width // 2, self.screen.get_height() * 0.57))
+        self.fullscreen_off_rect = self.fullscreen_off.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() * 0.57))
         self.fullscreen_on = self.load_and_scale_image('assets/images/UI/menuUI/Fullscreen_on.png', (70, 70))
         self.fullscreened = False
         # Custom cursor instance
@@ -140,6 +140,8 @@ class MainMenu:
             text_x = button_x + button_img.get_width() // 2
             text_y = button_y + button_img.get_height() - 60 // 2
             self.draw_text(option, color, text_x, text_y, 25)
+            self.draw_text("Made by Rodri & Louey", (255, 255, 255), self.screen.get_width() - self.screen.get_width() * 0.82, self.screen.get_height() * 0.92, 30)
+
 
         self.animate_foam()
         self.animate_boneco1()
@@ -174,9 +176,11 @@ class MainMenu:
 
     def options_menu(self):
         self.screen.blit(self.smooth_background, (0, 0))
+        #print(self.screen.get_width())
+        #print(self.screen.get_height())
 
-        banner_x = (self.width - self.banner_menu_options.get_width()) // 2
-        banner_y = (self.height - self.banner_menu_options.get_height()) // 2
+        banner_x = (self.screen.get_width() - self.banner_menu_options.get_width()) // 2
+        banner_y = (self.screen.get_height() - self.banner_menu_options.get_height()) // 2
         self.screen.blit(self.banner_menu_options, (banner_x, banner_y))
         self.draw_text("Options Menu", (0, 0, 0), self.screen.get_width() // 2, self.screen.get_height() * 0.30, 40)
 

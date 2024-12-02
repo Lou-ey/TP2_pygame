@@ -82,22 +82,23 @@ class MainMenu:
 
     #função para animar a espuma
     def animate_foam(self):
-        # Cria uma lista para armazenar as imagens da espuma
+        # Cria uma lista para armazenar as imagens redimensionadas da animação de espuma
         foam_rescaled = []
 
-        # Itera por cada frame na animação de espuma
+        # Itera por cada frame na animação de espuma (lista de imagens em self.foam_animation)
         for i in self.foam_animation:
+            # Converte a superfície para preservar transparência com .convert_alpha()
+            foam_rescaled.append(
+                pygame.transform.scale(i, (int(i.get_width() * 0.89), int(i.get_height() * 0.89))).convert_alpha())
 
-            foam_rescaled.append(pygame.transform.scale(i, (int(i.get_width() * 0.89), int(i.get_height() * 0.89))).convert_alpha())
-
-        # Incrementa o contador de frames
+        # Incrementa o contador de frames com base na velocidade da animação
         self.frame_counter += self.animation_speed
 
-        # Reinicia o contador se ele ultrapassar o número total de frames
+        # Reinicia o contador se ele ultrapassar o número total de frames na animação
         if self.frame_counter >= len(foam_rescaled):
             self.frame_counter = 0
 
-        # Seleciona a imagem atual da animação com base no contador
+        # Seleciona a imagem atual da animação com base no contador e define como `self.foam_image`
         self.foam_image = foam_rescaled[int(self.frame_counter)]
 
     def animate_boneco1(self):
@@ -115,12 +116,7 @@ class MainMenu:
     #Função para desenhar texto
     def draw_text(self, text, color, x, y, font_size):
         self.font = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), font_size)
-
-        # Renderiza o texto em uma superfície (text_surface).
         text_surface = self.font.render(text, True, color)
-
-        # Obtém um retângulo ao redor do texto renderizado.
-        # O centro do texto será posicionado nas coordenadas (x, y) fornecidas.
         text_rect = text_surface.get_rect(center=(x, y))
         self.screen.blit(text_surface, text_rect)
 
@@ -170,7 +166,7 @@ class MainMenu:
 
         # créditos
         self.draw_text("Made by Rodri & Louey", (255, 255, 255),self.screen.get_width() - self.screen.get_width() * 0.82, self.screen.get_height() * 0.92, 30)
-
+        self.draw_text("Music by, xDeviruchi", (255, 255, 255),self.screen.get_width() - self.screen.get_width() * 0.1, self.screen.get_height() * 0.95, 18)
         # Animações para os elementos de fundo
         self.animate_foam()
         self.animate_boneco1()

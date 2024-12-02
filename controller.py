@@ -4,6 +4,7 @@ from MainMenuController import MainMenuController
 
 pygame.init()
 
+#corre o jogo toudo
 def main():
     menu_controller = MainMenuController()
     while True:

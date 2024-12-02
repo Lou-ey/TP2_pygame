@@ -66,12 +66,13 @@ class GameScene:
         self.spawn_interval = 1000 # 1 segundo
         self.last_spawn_time = pygame.time.get_ticks()
 
+        self.menu_manager = MainMenu()
+
         # Instancia do AudioPlayer
         self.audio_player = AudioPlayer()
         self.audio_player.load_music()
         self.audio_player.load_sounds()
-
-        self.menu_manager = MainMenu()
+        self.audio_player.play_music()
 
         self.game_over_screen = GameOver(self.SCREEN)
         self.pause_screen = Pause(self.SCREEN, self)
@@ -101,7 +102,6 @@ class GameScene:
             tree_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             tree = Tree(tree_x, tree_y, self.TILE_SIZE) # Instancia uma árvore
             self.camera.add(tree)  # Adiciona as árvores à câmera
-
 
     def generate_stones(self, num_stones):
         # diferentes imagens de pedras
@@ -209,6 +209,8 @@ class GameScene:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.hide()
 
+        self.audio_player.handle_music_event()
+
     # Culling é uma técnica de otimização que consiste em renderizar apenas o que está visível no ecrã neste caso apenas os assets do chão
     def culling(self, character_x, character_y):
         character_tile_x = character_x // self.TILE_SIZE
@@ -248,8 +250,7 @@ class GameScene:
         self.cursor.update()
         self.character.die()
 
-        self.audio_player.load_music()
-        self.audio_player.play_music()
+
 
         if self.character.current_health <= 0:
             # wait 3 seconds before showing game over screen

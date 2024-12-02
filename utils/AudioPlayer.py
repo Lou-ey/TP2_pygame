@@ -11,6 +11,8 @@ class AudioPlayer:
         self.is_muted = False
         self.volume = 0.03
 
+        pygame.mixer.music.set_endevent(pygame.USEREVENT + 1)
+
     def load_sounds(self):
         # Carrega todos os sons
         #self.sounds['select'] = pygame.mixer.Sound('assets/sounds/game/sfx/select.wav')
@@ -35,8 +37,8 @@ class AudioPlayer:
         self.music_tracks = [os.path.join("assets", "sounds", "game", "musics", music) for music in music_files]
 
     def menu_music(self):
-        musica = 'assets/sounds/menu/Title_Theme .wav'
-        return musica
+        music = 'assets/sounds/menu/Title_Theme .wav'
+        return music
 
     def play_music(self):
         # Toca uma música de fundo aleatória
@@ -47,6 +49,14 @@ class AudioPlayer:
             pygame.mixer.music.play(-1)  # Reproduz a música em loop
             self.music_playing = True
             print(f"Playing music: {self.music}")  # Para debugar
+
+    def handle_music_event(self):
+        events = pygame.event.get([pygame.USEREVENT + 1])  # Filtra apenas os eventos relevantes
+        for event in events:
+            if event.type == pygame.USEREVENT + 1:  # Música terminou
+                self.music_playing = False
+                self.play_music()
+                print("Music ended, playing next music")
 
     def set_volume(self, volume):
         self.volume =  volume

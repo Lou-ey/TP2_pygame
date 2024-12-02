@@ -168,10 +168,10 @@ class GameScene:
         for _ in range(num_items):
             item_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
             item_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
-            item = HealingItem("Healing Potion", 25, 30, 30)
-            item.rect.x = item_x
-            item.rect.y = item_y
-            self.camera.add(item)
+            healing_potion = HealingItem("Healing Potion", 25, 30, 30)
+            healing_potion.rect.x = item_x
+            healing_potion.rect.y = item_y
+            self.camera.add(healing_potion)
 
     def spawn_enemy(self, enemy_class):
         """Função para spawnar inimigos fora da área visível, mas perto do personagem."""

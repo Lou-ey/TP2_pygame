@@ -204,9 +204,6 @@ class GameScene:
     def restart_game(self):
         self.__init__()
 
-    def return_to_main_menu(self):
-        self.menu_manager.run()
-
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

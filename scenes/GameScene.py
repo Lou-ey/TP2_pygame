@@ -168,7 +168,7 @@ class GameScene:
         for _ in range(num_items):
             item_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
             item_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
-            item = HealingItem("Healing Potion", 25, 24, 24)
+            item = HealingItem("Healing Potion", 25, 30, 30)
             item.rect.x = item_x
             item.rect.y = item_y
             self.camera.add(item)

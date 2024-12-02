@@ -3,7 +3,6 @@ import pygame
 from scenes.GameScene import GameScene
 from utils.AudioPlayer import AudioPlayer
 from utils.State import State
-from scenes.LodingScene import LoadingScene
 
 class MainMenuController:
     def __init__(self):
@@ -16,7 +15,6 @@ class MainMenuController:
         self.current_state = self.State.MENU
         self.to_play = False
         self.game = None
-        self.loading = LoadingScene()
 
     def handle_events_menu(self):
         for event in pygame.event.get():
@@ -71,7 +69,6 @@ class MainMenuController:
         elif self.current_state == State.GAME:
             if not self.to_play:
                 self.game = GameScene()  # Cria a instância do jogo
-                #self.loading.run(self.game)
                 self.to_play = True
 
             self.game.run()

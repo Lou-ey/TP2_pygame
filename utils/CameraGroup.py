@@ -10,10 +10,10 @@ class CameraGroup(pygame.sprite.Group):
         self.screen_height = screen_height
         self.map_width = map_width
         self.map_height = map_height
-        self.offset = pygame.math.Vector2()
+        self.offset = pygame.math.Vector2() # Deslocamento da camera
 
     def center_on(self, target):
-        # Centraliza a camera no alvo
+        # Centra a camera no alvo
         self.offset.x = target.rect.centerx - self.screen_width // 2
         self.offset.y = target.rect.centery - self.screen_height // 2
 
@@ -38,7 +38,7 @@ class CameraGroup(pygame.sprite.Group):
 
         for sprite in self.sprites():
             if isinstance(sprite, TorchGoblin):
-                # Passa `player_position`, `enemies` e o `character` para o TorchGoblin
+                # Atualiza o inimigo passando os outros inimigos e o personagem principal como parametros
                 sprite.update(args[0], enemies, character)
             else:
                 # Atualiza outros sprites normalmente

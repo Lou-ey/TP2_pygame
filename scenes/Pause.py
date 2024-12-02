@@ -71,8 +71,6 @@ class Pause:
         else:
             self.screen.blit(self.with_sound, self.with_sound_rect.topleft)
 
-        #pygame.draw.rect(self.screen, (255, 0, 0), self.with_sound_rect, 2)
-
         self.cursor.draw(self.screen)
         self.cursor.show()
         self.cursor.update()

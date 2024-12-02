@@ -239,7 +239,8 @@ class Character(pygame.sprite.Sprite):
     def take_damage(self, damage):
         self.current_health = max(0, self.current_health - damage)
         self.health_bar.update(self.current_health)
-        self.audio_player.play_sound('player_hit', 0.2)
+        if not self.is_dead:
+            self.audio_player.play_sound('player_hit', 0.2)
 
     def gain_xp(self, xp):
         self.xp_bar.current_xp += xp
@@ -251,7 +252,11 @@ class Character(pygame.sprite.Sprite):
     def level_up(self):
         if self.xp_bar.current_xp >= self.xp_bar.max_xp:
             self.current_level += 1
-            self.xp_bar.max_xp *= 2
+            self.xp_bar.max_xp *= 1.5
             self.xp_bar.current_xp = 0
             self.xp_bar.update_bar()
             self.audio_player.play_sound('level_up', 0.2)
+
+    def heal(self, amount):
+        self.current_health = min(self.max_health, self.current_health + amount)
+        self.health_bar.update(self.current_health)

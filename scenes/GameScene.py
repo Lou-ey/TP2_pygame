@@ -14,6 +14,7 @@ from scenes.MainMenu import MainMenu
 from scenes.GameOver import GameOver
 from scenes.Pause import Pause
 from utils.State import State
+from entities.objects.HealingItem import HealingItem
 
 class GameScene:
     def __init__(self):
@@ -49,11 +50,13 @@ class GameScene:
         self.num_stones = 200
         self.num_mushrooms = 200
         self.num_bushes = 200
+        self.num_items = 5
 
         self.generate_trees(self.num_trees)
         self.generate_stones(self.num_stones)
         self.generate_mushrooms(self.num_mushrooms)
         self.generate_bushes(self.num_bushes)
+        self.generate_healing_items(self.num_items)
 
         self.background_color = (39, 110, 58)
 
@@ -104,6 +107,9 @@ class GameScene:
         for _ in range(num_trees):
             tree_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
             tree_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            while self.map_layout[tree_y // self.TILE_SIZE][tree_x // self.TILE_SIZE] == 1:
+                tree_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+                tree_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             tree = Tree(tree_x, tree_y, self.TILE_SIZE)
             self.camera.add(tree)  # Adiciona as árvores à câmera
 
@@ -117,6 +123,10 @@ class GameScene:
         for _ in range(num_stones):
             stone_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
             stone_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            # evita que as pedras sejam geradas em cima da pocao de cura
+            while self.map_layout[stone_y // self.TILE_SIZE][stone_x // self.TILE_SIZE] == 1:
+                stone_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+                stone_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             stone = Stone(stone_x, stone_y, self.TILE_SIZE, stone_images)
             self.camera.add(stone)
 
@@ -130,6 +140,10 @@ class GameScene:
         for _ in range(num_mushrooms):
             mushroom_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
             mushroom_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            # evita que os cogumelos sejam gerados em cima da pocao de cura
+            while mushroom_y // self.TILE_SIZE == self.character.rect.y // self.TILE_SIZE and mushroom_x // self.TILE_SIZE == self.character.rect.x // self.TILE_SIZE:
+                mushroom_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+                mushroom_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             mushroom = Mushroom(mushroom_x, mushroom_y, self.TILE_SIZE, mushroom_images)
             self.camera.add(mushroom)
 
@@ -144,8 +158,20 @@ class GameScene:
         for _ in range(num_bushes):
             bush_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
             bush_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            while self.map_layout[bush_y // self.TILE_SIZE][bush_x // self.TILE_SIZE] == 1:
+                bush_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+                bush_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
             bush = Bush(bush_x, bush_y, self.TILE_SIZE, bush_images)
             self.camera.add(bush)
+
+    def generate_healing_items(self, num_items):
+        for _ in range(num_items):
+            item_x = random.randint(0, self.MAP_WIDTH - 1) * self.TILE_SIZE
+            item_y = random.randint(0, self.MAP_HEIGHT - 1) * self.TILE_SIZE
+            item = HealingItem("Healing Potion", 25, 24, 24)
+            item.rect.x = item_x
+            item.rect.y = item_y
+            self.camera.add(item)
 
     def spawn_enemy(self, enemy_class):
         """Função para spawnar inimigos fora da área visível, mas perto do personagem."""
@@ -200,10 +226,6 @@ class GameScene:
                         quit()
                 if event.key == pygame.K_LCTRL:
                     self.cursor.show()
-                ### apenas para teste
-                if event.key == pygame.K_CAPSLOCK:
-                    self.character.gain_xp(5)
-                ###
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LCTRL:
                     self.cursor.hide()
@@ -276,6 +298,13 @@ class GameScene:
             if self.character.collision_rect.colliderect(enemy.collision_rect):
                 self.character.take_damage(enemy.attack)
 
+        for item in self.camera:
+            if isinstance(item, HealingItem):
+                if self.character.collision_rect.colliderect(item.rect):
+                    self.character.heal(item.give_health())
+                    self.audio_player.play_sound("heal", 0.1)
+                    item.kill()
+
         # ataque do personagem
         for enemy in self.enemies:
             if self.character.attack_rect.colliderect(enemy.collision_rect):
@@ -325,9 +354,6 @@ class GameScene:
 
             self.menu_manager.draw_text("Atack: ", (255, 255, 255),self.SCREEN.get_width() - self.SCREEN.get_width() * 0.96,self.SCREEN.get_height() - self.SCREEN.get_height() * 0.12, 25)
             self.SCREEN.blit(self.tutorial_atack_scale, (self.SCREEN.get_width() - self.SCREEN.get_width() * 0.92, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.14))
-
-
-
 
             # Desenha o cursor se ele tiver uma imagem
             if self.cursor.image:

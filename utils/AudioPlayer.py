@@ -21,6 +21,7 @@ class AudioPlayer:
         #self.sounds['player_die'] = pygame.mixer.Sound('assets/sounds/game/player_die.wav')
         self.sounds['player_hit'] = pygame.mixer.Sound('assets/sounds/game/sfx/player_hit.wav')
         #self.sounds['player_walk'] = pygame.mixer.Sound('assets/sounds/game/sfx/player_walk.wav')
+        self.sounds['heal'] = pygame.mixer.Sound('assets/sounds/game/sfx/heal.wav')
 
     def play_sound(self, sound_name, volume):
         # Toca um som

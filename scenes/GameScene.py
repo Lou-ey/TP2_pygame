@@ -319,9 +319,9 @@ class GameScene:
 
             # Render da barra de xp do personagem
             self.SCREEN.blit(self.character.xp_bar.image, (10, 10))
-            level_label = pygame.font.Font(os.path.join('assets/fonts/Jacquard24-Regular.ttf'), 30).render(
+            level_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 30).render(
             f"Level: {self.character.current_level}", True, (255, 255, 255))
-            xp_label = pygame.font.Font(os.path.join('assets/fonts/Jacquard24-Regular.ttf'), 15).render(
+            xp_label = pygame.font.Font(os.path.join('assets/fonts/DungeonFont.ttf'), 15).render(
             f"XP: {self.character.xp_bar.current_xp}/{self.character.xp_bar.max_xp}", True, (255, 255, 255))
             self.SCREEN.blit(level_label, (10, 30))
             self.SCREEN.blit(xp_label, (self.SCREEN_WIDTH - 73, 25))
@@ -332,7 +332,7 @@ class GameScene:
             self.menu_manager.draw_text("Movement: ", (255, 255, 255),self.SCREEN.get_width() - self.SCREEN.get_width() * 0.93, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.22,30)
             self.SCREEN.blit(self.tutorial_movement_scale, (self.SCREEN.get_width() - self.SCREEN.get_width() * 0.87, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.27))
 
-            self.menu_manager.draw_text("Atack: ", (255, 255, 255),self.SCREEN.get_width() - self.SCREEN.get_width() * 0.96,self.SCREEN.get_height() - self.SCREEN.get_height() * 0.12, 25)
+            self.menu_manager.draw_text("Attack: ", (255, 255, 255),self.SCREEN.get_width() - self.SCREEN.get_width() * 0.96,self.SCREEN.get_height() - self.SCREEN.get_height() * 0.12, 25)
             self.SCREEN.blit(self.tutorial_attack_scale, (self.SCREEN.get_width() - self.SCREEN.get_width() * 0.92, self.SCREEN.get_height() - self.SCREEN.get_height() * 0.14))
 
             # Desenha o cursor se ele tiver uma imagem

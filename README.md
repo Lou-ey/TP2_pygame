@@ -4,71 +4,45 @@ Este é um jogo desenvolvido em Python utilizando a biblioteca Pygame. O jogo ap
 
 ## Índice
 
-- [Recursos](#recursos)
 - [Instalação](#instalação)
-- [Como Jogar](#como-jogar)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Contribuições](#contribuições)
-- [Licença](#licença)
-
-## Recursos
-
-- **Movimentação do Personagem:** O personagem pode se mover em quatro direções.
-- **Interação com o Ambiente:** Árvores que podem ser desenhadas no mapa, e o personagem pode passar atrás delas.
-- **Animações:** O personagem e as árvores possuem animações para tornar a experiência mais envolvente.
+- [Recursos](#recursos)
 
 ## Instalação
 
-Para executar o jogo, você precisará ter Python e Pygame instalados em seu sistema. Siga os passos abaixo:
+Para executar o jogo, será necessário ter Python 3.12 e Pygame 2.6.1 instalados. Se não cumprir os requisitos, siga as instruções abaixo.
 
-1. Clone este repositório:
-   ```bash
-   git clone <URL_DO_REPOSITÓRIO>
-   cd <NOME_DA_PASTA>
-
-2. Instale o Pygame:
-   ```bash
-    pip install pygame
+1. Instalar o Python 3.12:
    
-3. Execute o jogo:
+   - Através do site oficial do Python, faça o download da versão 3.12 e siga as instruções de instalação. [Python 3.12 Site Oficial](https://www.python.org/downloads/)
 
-    ```bash
+   - Ou atraves da Microsoft Store: [Python 3.12 Microsoft Store](https://apps.microsoft.com/detail/9ncvdn91xzqp?hl=pt-pt&gl=BR)
+
+2. Instalar o Pygame 2.6.1:
+Através do terminal, executar o comando:
+
+   ```bash
+   pip install pygame
+   ```
+   ou 
+   ```bash
+   pip install pygame==2.6.1
+   ```
+
+3. Executar o jogo:
+   O jogo deve ser executado através do ficheiro `controller.py`. Para isso, execute o seguinte comando no terminal:
+   ```bash
+    cd [CAMINHO_DO_PROJETO]
     python controller.py
-   
-## Estrutura do Projeto
+    ```
 
-``` bash
-project_directory/
-│
-├── controller.py               # Ficheiro principal para iniciar o jogo
-├── scenes/                      # Contém as diferentes cenas do jogo
-│   ├── game_scene.py            # Lógica da cena do jogo
-│
-├── entities/                    # Contém os diferentes sprites do jogo
-│   ├── characters/              # Contém a classe do personagem
-│   │   └── Character.py
-│   ├── objects/                 # Contém objetos interativos como árvores
-│   │   └── Tree.py
-│   ├── enemies/                 # Contém inimigos do jogo
-│   │   └── Enemy.py
-│
-├── utils/                       # Funções utilitárias
-│   ├── CameraGroup.py           # Classe para gerenciar a câmera do jogo
-│   ├── Cursor.py                # Classe para gerenciar o cursor do jogo
-│   └── helpers.py             # Constantes do jogo
-│
-├── assets/                      # Imagens e sons do jogo
-│   ├── images/
-│   │   ├── map/
-│   │   │   ├── grass_tile.png
-│   │   │   ├── tree/
-│   │   │   │   ├── 00.png
-│   │   │   │   ├── 01.png
-│   │   │   │   ├── 02.png
-│   │   │   │   └── 03.png
-│   │   └── ...
-│   └── sound/
-│
-└── README.md                   # Este ficheiro
-```
+## Recursos
+
+- [Python 3.12](https://www.python.org/downloads/)
+- [Pygame 2.6.1](https://www.pygame.org/)
+- [Microsoft Store](https://apps.microsoft.com/detail/9ncvdn91xzqp?hl=pt-pt&gl=BR)
+- [PyCharm](https://www.jetbrains.com/pt-br/pycharm/)
+- [Git](https://git-scm.com/)
+
+
+
 

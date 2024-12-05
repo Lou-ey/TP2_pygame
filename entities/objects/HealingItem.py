@@ -25,7 +25,7 @@ class HealingItem(pygame.sprite.Sprite):
             self.idle_animation[i] = pygame.transform.scale(self.idle_animation[i], (self.width, self.height))
 
         self.frame_counter = 0
-        self.animation_speed = 0.1
+        self.animation_speed = 0.3
         self.current_frame = 0
 
     def update(self, *args):

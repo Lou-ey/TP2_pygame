@@ -3,7 +3,6 @@ import pygame
 from scenes.GameScene import GameScene
 from utils.AudioPlayer import AudioPlayer
 from utils.State import State
-from scenes.LodingScene import LoadingScene
 
 class MainMenuController:
     def __init__(self):
@@ -16,8 +15,8 @@ class MainMenuController:
         self.current_state = self.State.MENU
         self.to_play = False
         self.game = None
-        self.loading = LoadingScene()
 
+    #verifica todos os eventos no menu
     def handle_events_menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -25,6 +24,7 @@ class MainMenuController:
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    #verifica se o rato clica no botão de fullscreen
                     if self.menu.fullscreen_off_rect.collidepoint(self.menu.mouse_position):
                         self.menu.fullscreened = not self.menu.fullscreened and self.show_options == True
                         if self.menu.fullscreened:
@@ -35,6 +35,7 @@ class MainMenuController:
                         else:
                             self.menu.screen = pygame.display.set_mode((self.menu.width, self.menu.height))
 
+                    #verifica se o rato clica no botão de som
                     if self.menu.with_sound_rect.collidepoint(self.menu.mouse_position) and self.show_options == True:
                         self.menu.muted = not self.menu.muted
                         if self.menu.muted:
@@ -42,7 +43,7 @@ class MainMenuController:
 
                         else:
                             pygame.mixer.music.set_volume(0.03)
-
+                    #verifica se o rato clica no botão de voltar
                     if self.menu.back_button_rect.collidepoint(self.menu.mouse_position):
                         self.show_options = False
                     for i, rect in enumerate(self.menu.button_rects):
@@ -56,6 +57,8 @@ class MainMenuController:
                                 quit()
                             elif selected_option == "Options" and self.show_options == False:
                                 self.show_options = True
+
+
 
     def run(self):
         self.menu.mouse_position = pygame.mouse.get_pos()
@@ -71,7 +74,6 @@ class MainMenuController:
         elif self.current_state == State.GAME:
             if not self.to_play:
                 self.game = GameScene()  # Cria a instância do jogo
-                #self.loading.run(self.game)
                 self.to_play = True
 
             self.game.run()

@@ -61,26 +61,26 @@ class Enemy(pygame.sprite.Sprite):
 
     def avoid_overlapping(self, enemies, character):
         # Define uma pequena distância de segurança
-        distancia_segura = 1
+        secure_distance = 1
 
         # Evitar overlap com outros inimigos
         for enemy in enemies:
             if enemy != self:
                 if self.collision_rect.colliderect(enemy.collision_rect):
                     # Calcula a direção de separação
-                    separacao = pygame.math.Vector2(self.rect.center) - pygame.math.Vector2(enemy.collision_rect.center)
-                    if separacao.length() != 0:
-                        separacao = separacao.normalize()
-                        self.rect.x += separacao.x * distancia_segura
-                        self.rect.y += separacao.y * distancia_segura
+                    separation = pygame.math.Vector2(self.rect.center) - pygame.math.Vector2(enemy.collision_rect.center)
+                    if separation.length() != 0:
+                        separation = separation.normalize()
+                        self.rect.x += separation.x * secure_distance
+                        self.rect.y += separation.y * secure_distance
 
         # Evitar overlap com o personagem
         if self.collision_rect.colliderect(character.collision_rect):
-            separacao = pygame.math.Vector2(self.rect.center) - pygame.math.Vector2(character.collision_rect.center)
-            if separacao.length() != 0:
-                separacao = separacao.normalize()
-                self.rect.x += separacao.x * distancia_segura
-                self.rect.y += separacao.y * distancia_segura
+            separation = pygame.math.Vector2(self.rect.center) - pygame.math.Vector2(character.collision_rect.center)
+            if separation.length() != 0:
+                separation = separation.normalize()
+                self.rect.x += separation.x * secure_distance
+                self.rect.y += separation.y * secure_distance
 
     def give_xp(self):
         """Calcula e retorna XP se o inimigo foi derrotado"""

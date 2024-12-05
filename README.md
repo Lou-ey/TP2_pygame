@@ -6,6 +6,7 @@ Este é um jogo desenvolvido em Python utilizando a biblioteca Pygame. O jogo ap
 
 - [Instalação](#instalação)
 - [Recursos](#recursos)
+- [Autores](#autores)
 
 ## Instalação
 
@@ -19,15 +20,16 @@ Para executar o jogo, será necessário ter Python 3.12 e Pygame 2.6.1 instalado
 
 
 2. Instalar o Pygame 2.6.1:
-Através do terminal, executar o comando:
 
-   ```bash
-   pip install pygame
-   ```
-   ou para instalar uma versão específica:
-   ```bash
-   pip install pygame==2.6.1
-   ```
+      Através do terminal, executar o comando:
+
+      ```bash
+      pip install pygame
+      ```
+      ou para instalar uma versão específica:
+      ```bash
+      pip install pygame==2.6.1
+      ```
 
 3. Executar o jogo:
    O jogo deve ser executado através do ficheiro `controller.py`. Para isso, execute o seguinte comando no terminal:
@@ -42,6 +44,12 @@ Através do terminal, executar o comando:
 - [Pygame 2.6.1](https://www.pygame.org/)
 - [PyCharm](https://www.jetbrains.com/pt-br/pycharm/)
 - [Git](https://git-scm.com/)
+- [GitHub](https://github.com/Lou-ey/TP2_pygame)
+
+## Autores
+
+- [Lou-ey](https://github.com/Lou-ey)
+- [Rodrigoperere454](https://github.com/Rodrigoperere454)
 
 
 

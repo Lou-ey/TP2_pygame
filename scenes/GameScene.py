@@ -217,8 +217,8 @@ class GameScene:
         character_tile_y = character_y // self.TILE_SIZE
 
         # Define os limites visíveis
-        visible_range_x = 20
-        visible_range_y = 15
+        visible_range_x = 15
+        visible_range_y = 10
 
         # Calcula os limites da área visível considerando as bordas do mapa
         min_x = max(0, character_tile_x - visible_range_x)

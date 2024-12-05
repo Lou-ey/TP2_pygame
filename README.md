@@ -13,9 +13,10 @@ Para executar o jogo, será necessário ter Python 3.12 e Pygame 2.6.1 instalado
 
 1. Instalar o Python 3.12:
    
-   - Através do site oficial do Python, faça o download da versão 3.12 e siga as instruções de instalação. [Python 3.12 Site Oficial](https://www.python.org/downloads/)
+   - Através do [Site Oficial](https://www.python.org/downloads/) do Python, faça o download da versão 3.12 e siga as instruções de instalação. 
 
-   - Ou atraves da Microsoft Store: [Python 3.12 Microsoft Store](https://apps.microsoft.com/detail/9ncvdn91xzqp?hl=pt-pt&gl=BR)
+   - Ou atraves da [Microsoft Store](https://apps.microsoft.com/detail/9ncvdn91xzqp?hl=pt-pt&gl=BR): 
+
 
 2. Instalar o Pygame 2.6.1:
 Através do terminal, executar o comando:

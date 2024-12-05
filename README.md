@@ -23,7 +23,7 @@ Através do terminal, executar o comando:
    ```bash
    pip install pygame
    ```
-   ou 
+   ou para instalar uma versão específica:
    ```bash
    pip install pygame==2.6.1
    ```
@@ -39,7 +39,6 @@ Através do terminal, executar o comando:
 
 - [Python 3.12](https://www.python.org/downloads/)
 - [Pygame 2.6.1](https://www.pygame.org/)
-- [Microsoft Store](https://apps.microsoft.com/detail/9ncvdn91xzqp?hl=pt-pt&gl=BR)
 - [PyCharm](https://www.jetbrains.com/pt-br/pycharm/)
 - [Git](https://git-scm.com/)
 

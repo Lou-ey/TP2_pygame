@@ -4,7 +4,7 @@ from utils.XPBar import XPBar
 from utils.AudioPlayer import AudioPlayer
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, max_health, max_xp, attack,  xp, defense, speed, x, y, width, height, level):
+    def __init__(self, name, max_health, max_xp, attack, xp, defense, speed, x, y, width, height, level):
         super().__init__()
         self.name = name
         self.max_health = max_health
@@ -237,6 +237,9 @@ class Character(pygame.sprite.Sprite):
                 self.is_moving = False
                 self.is_attacking = False
             self.animate_die()
+            # guarda o nivel do personagem em um arquivo
+            with open('level.txt', 'w') as f:
+                f.write(str(f'{o}:{self.current_level}'))
 
     def take_damage(self, damage):
         self.current_health = max(0, self.current_health - damage)
@@ -254,7 +257,7 @@ class Character(pygame.sprite.Sprite):
             self.max_xp = self.calculate_max_xp_for_next_level()
 
     def level_up(self):
-        self.level += 1
+        self.current_level += 1
         #self.max_xp = self.calculate_max_xp_for_next_level()
 
     def calculate_max_xp_for_next_level(self):

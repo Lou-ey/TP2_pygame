@@ -40,7 +40,7 @@ class GameScene:
         self.cursor.hide()  # Esconde o cursor
 
         # Instancia do personagem
-        self.character = Character("Player", 100, 10, 25, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1])
+        self.character = Character("Player", 100, 10, 25, 5, 2, self.MAP_WIDTH * self.TILE_SIZE // 2, self.MAP_HEIGHT * self.TILE_SIZE // 2, self.CHARACTER_SIZE[0], self.CHARACTER_SIZE[1], 10, 1)
         self.camera.add(self.character) # Adiciona o personagem à camera
 
         # Instancia dos inimigos

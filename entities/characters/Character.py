@@ -4,7 +4,7 @@ from utils.XPBar import XPBar
 from utils.AudioPlayer import AudioPlayer
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, max_health, max_xp, attack, defense, speed, x, y, width, height):
+    def __init__(self, name, max_health, max_xp, attack,  xp, defense, speed, x, y, width, height, level):
         super().__init__()
         self.name = name
         self.max_health = max_health
@@ -17,6 +17,8 @@ class Character(pygame.sprite.Sprite):
         self.attack = attack
         self.defense = defense
         self.speed = speed
+        self.level = level
+        self.xp = xp
         self.x = x
         self.y = y
         self.width = width
@@ -239,24 +241,24 @@ class Character(pygame.sprite.Sprite):
     def take_damage(self, damage):
         self.current_health = max(0, self.current_health - damage)
         self.health_bar.update(self.current_health)
-        if not self.is_dead:
+        if self.current_health == 0:  # Verifica se a saúde caiu para 0
+            self.is_dead = True
+        if not self.is_dead:  # Toca som apenas se o personagem ainda estiver vivo
             self.audio_player.play_sound('player_hit', 0.2)
 
-    def gain_xp(self, xp):
-        self.xp_bar.current_xp += xp
-        if self.xp_bar.current_xp >= self.xp_bar.max_xp:
-            self.level_up()
-            self.xp_bar.current_xp = 0
-        self.xp_bar.update(self.xp_bar.current_xp)
+    def gain_xp(self, amount):
+        self.xp += amount
+        while self.xp >= self.max_xp:
+            self.xp -= self.max_xp
+            self.level += 1
+            self.max_xp = self.calculate_max_xp_for_next_level()
 
     def level_up(self):
-        if self.xp_bar.current_xp >= self.xp_bar.max_xp:
-            self.current_level += 1
-            self.xp_bar.max_xp *= 1.5
-            self.xp_bar.current_xp = 0
-            self.xp_bar.update_bar()
-            self.audio_player.play_sound('level_up', 0.2)
+        self.level += 1
+        #self.max_xp = self.calculate_max_xp_for_next_level()
 
+    def calculate_max_xp_for_next_level(self):
+        return self.level * 100
 
     def heal(self, amount):
         self.current_health = min(self.max_health, self.current_health + amount)

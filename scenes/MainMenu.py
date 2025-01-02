@@ -14,9 +14,9 @@ class MainMenu:
             pygame.mixer.music.play(-1)
 
         pygame.mouse.set_visible(False)
-        pygame.display.set_caption("Dungeon Crawler")
+        pygame.display.set_caption("Cavaleiro Jeitoso")
         self.width = 1200
-        self.height = 800
+        self.height = 770
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.options = ["Play", "Options", "Quit"]
         self.selected_option = 0
@@ -165,8 +165,9 @@ class MainMenu:
             self.draw_text(option, color, text_x, text_y, 25)
 
         # créditos
-        self.draw_text("Made by Rodri & Louey", (255, 255, 255),self.screen.get_width() - self.screen.get_width() * 0.82, self.screen.get_height() * 0.92, 30)
+        self.draw_text("Made by Rodrigo & Luis", (255, 255, 255),self.screen.get_width() - self.screen.get_width() * 0.82, self.screen.get_height() * 0.92, 30)
         self.draw_text("Music by, xDeviruchi", (255, 255, 255),self.screen.get_width() - self.screen.get_width() * 0.1, self.screen.get_height() * 0.95, 18)
+        self.draw_text("Assets by, Pixel Frog", (255, 255, 255), self.screen.get_width() - self.screen.get_width() * 0.1, self.screen.get_height() * 0.98, 18)
         # Animações para os elementos de fundo
         self.animate_foam()
         self.animate_boneco1()

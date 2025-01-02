@@ -257,6 +257,7 @@ class Character(pygame.sprite.Sprite):
             self.xp_bar.update_bar()
             self.audio_player.play_sound('level_up', 0.2)
 
+
     def heal(self, amount):
         self.current_health = min(self.max_health, self.current_health + amount)
         self.health_bar.update(self.current_health)

@@ -21,7 +21,7 @@ class GameScene:
         self.SCREEN_WIDTH = pygame.display.Info().current_w
         self.SCREEN_HEIGHT = pygame.display.Info().current_h
         self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.WINDOWMAXIMIZED)
-        pygame.display.set_caption("Dungeon Crawler")
+        pygame.display.set_caption("Cavaleiro Jeitoso")
 
         self.TILE_SIZE = 64
         self.MAP_WIDTH = 60

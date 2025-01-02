@@ -11,6 +11,7 @@ def init_pygame():
     pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     yield
     pygame.quit()
+    #Louey biutifol
 
 # Teste de morte
 def test_character_death():
